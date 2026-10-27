@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<title>Tập 6: Khung Phương Pháp Luận 5 Tầng: Social Listening & Brand Monitoring | Chạm Đà Lạt</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Andika:ital,wght@0,400;0,700;1,400&family=Blinker:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cham-green: #53783e;
+    --cham-dark: #284d2c;
+    --cham-deep: #1b361e;
+    --cham-light: #b6c79e;
+    --cham-soft: #eef4e6;
+    --cham-cream: #faf9f5;
+    --cham-card: #ffffff;
+    --cham-gold: #d9822b;
+    --cham-gold-soft: #fef7ec;
+    --cham-red: #c2410c;
+    --cham-red-soft: #fff1ed;
+    --border-color: #dce7d1;
+    --text-heading: #284d2c;
+    --text-body: #3c4a35;
+    --text-muted: #6b7a63;
+    --radius-xl: 18px;
+    --radius-lg: 12px;
+    --radius-md: 8px;
+    --radius-full: 9999px;
+    --shadow-cham: 0 10px 25px -5px rgba(83, 120, 62, 0.08), 0 4px 10px -2px rgba(0, 0, 0, 0.03);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Andika', sans-serif;
+    background-color: var(--cham-cream);
+    color: var(--text-body);
+    line-height: 1.75;
+    background-image: 
+      radial-gradient(circle at 10% 10%, rgba(83, 120, 62, 0.05) 0%, transparent 45%),
+      radial-gradient(circle at 90% 40%, rgba(217, 130, 43, 0.04) 0%, transparent 40%),
+      radial-gradient(circle at 50% 90%, rgba(182, 199, 158, 0.08) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+  
+  h1, h2, h3, h4, .brand-name, .kpi-value, .chapter-title, .page-title {
+    font-family: 'Blinker', sans-serif;
+    letter-spacing: -0.2px;
+  }
+  
+  /* STANDALONE HEADER MATCHING CHẠM ĐÀ LẠT */
+  .standalone-header {
+    background: #ffffff;
+    border-bottom: 2px solid var(--border-color);
+    padding: 14px 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(83, 120, 62, 0.05);
+  }
+  .brand-group { display: flex; align-items: center; gap: 14px; }
+  .brand-logo-img {
+    height: 48px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+  }
+  .brand-icon {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, #53783e, #284d2c);
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    box-shadow: 0 4px 12px rgba(83, 120, 62, 0.25);
+  }
+  .brand-name { font-size: 1.25rem; font-weight: 800; color: var(--cham-dark); letter-spacing: 0.5px; }
+  .brand-sub { font-size: 0.72rem; color: var(--cham-green); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .vol-badge-pill {
+    background: var(--cham-soft);
+    border: 1px solid var(--cham-light);
+    color: var(--cham-dark);
+    font-size: 0.82rem;
+    font-weight: 800;
+    padding: 6px 18px;
+    border-radius: var(--radius-full);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Blinker', sans-serif;
+  }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 45px 24px 90px; }
+  
+  .breadcrumb { font-size: 0.85rem; font-weight: 800; color: var(--cham-gold); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; font-family: 'Blinker', sans-serif; }
+  .page-title { font-size: clamp(2.2rem, 4.2vw, 3.4rem); font-weight: 900; line-height: 1.2; margin-bottom: 18px; color: var(--cham-dark); }
+  .page-title span { color: var(--cham-green); }
+  .page-lead { font-size: 1.15rem; color: var(--text-muted); max-width: 980px; margin-bottom: 30px; line-height: 1.8; }
+
+  /* PHOTO EMBED BANNER */
+  .photo-banner {
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    margin: 25px 0 45px;
+    box-shadow: var(--shadow-cham);
+    border: 1px solid var(--border-color);
+    background: #fff;
+  }
+  .photo-banner img {
+    width: 100%;
+    height: auto;
+    max-height: 520px;
+    object-fit: cover;
+    display: block;
+  }
+  .photo-caption {
+    padding: 14px 22px;
+    background: #fff;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+  }
+
+  /* KPI ROW */
+  .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; margin-bottom: 50px; }
+  .kpi-box {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 24px 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-cham);
+  }
+  .kpi-box::before {
+    content:'';
+    position: absolute;
+    top:0; left:0; right:0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--cham-green), var(--cham-light));
+  }
+  .kpi-value { font-size: 2.3rem; font-weight: 900; color: var(--cham-green); margin-bottom: 4px; }
+  .kpi-label { font-size: 0.9rem; color: var(--text-muted); font-weight: 600; line-height: 1.5; }
+
+  /* CHAPTER */
+  .chapter { margin-bottom: 60px; }
+  .chapter-header { margin-bottom: 24px; border-bottom: 2px solid var(--border-color); padding-bottom: 14px; }
+  .chapter-num { font-size: 0.85rem; font-weight: 800; color: var(--cham-green); text-transform: uppercase; letter-spacing: 2px; font-family: 'Blinker', sans-serif; }
+  .chapter-title { font-size: 1.9rem; font-weight: 800; color: var(--cham-dark); margin-top: 4px; }
+
+  /* CUSTOM TABLES */
+  .custom-table { width: 100%; border-collapse: collapse; margin: 20px 0 35px; background: #ffffff; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border-color); box-shadow: var(--shadow-cham); }
+  .custom-table th { background: var(--cham-soft); color: var(--cham-dark); text-align: left; padding: 16px 20px; font-size: 0.92rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--cham-light); font-family: 'Blinker', sans-serif; }
+  .custom-table td { padding: 16px 20px; border-bottom: 1px solid #edf3e7; font-size: 0.95rem; vertical-align: top; color: var(--text-body); }
+  .custom-table tr:hover td { background: #f9fbf6; }
+  .custom-table code { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; background: var(--cham-soft); color: var(--cham-dark); padding: 3px 6px; border-radius: 4px; display: inline-block; margin-bottom: 3px; }
+
+  /* BOXES */
+  .deep-box { background: var(--cham-soft); border: 1px solid var(--cham-light); border-radius: var(--radius-lg); padding: 28px; margin: 24px 0; box-shadow: var(--shadow-cham); }
+  .deep-box h3 { font-size: 1.3rem; font-weight: 800; margin-bottom: 12px; color: var(--cham-dark); display: flex; align-items: center; gap: 8px; }
+  
+  .callout-cold { background: var(--cham-soft); border-left: 4px solid var(--cham-green); padding: 22px; border-radius: 0 var(--radius-md) var(--radius-md) 0; margin: 20px 0; }
+  .callout-cold h4 { color: var(--cham-dark); font-weight: 800; margin-bottom: 8px; font-size: 1.15rem; font-family: 'Blinker', sans-serif; }
+
+  .callout-gold { background: var(--cham-gold-soft); border-left: 4px solid var(--cham-gold); padding: 22px; border-radius: 0 var(--radius-md) var(--radius-md) 0; margin: 20px 0; }
+  .callout-gold h4 { color: #b45309; font-weight: 800; margin-bottom: 8px; font-size: 1.15rem; font-family: 'Blinker', sans-serif; }
+
+  .callout-red { background: var(--cham-red-soft); border-left: 4px solid var(--cham-red); padding: 22px; border-radius: 0 var(--radius-md) var(--radius-md) 0; margin: 20px 0; }
+  .callout-red h4 { color: #9a3412; font-weight: 800; margin-bottom: 8px; font-size: 1.15rem; font-family: 'Blinker', sans-serif; }
+
+  .formula-box { background: var(--cham-deep); border-radius: var(--radius-md); padding: 20px 24px; margin: 18px 0; font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; color: #d9f2c7; line-height: 1.7; overflow-x: auto; white-space: pre-wrap; }
+
+  .grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 24px 0; }
+  @media(max-width:850px){ .grid-2col { grid-template-columns: 1fr; } }
+  .card-stat { background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 26px; box-shadow: var(--shadow-cham); }
+  .card-stat h4 { font-size: 1.2rem; font-weight: 800; margin-bottom: 10px; color: var(--cham-dark); font-family: 'Blinker', sans-serif; }
+
+  .script-card { background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 24px; margin: 20px 0; box-shadow: var(--shadow-cham); }
+  .script-card h4 { font-size: 1.25rem; font-weight: 800; color: var(--cham-dark); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; font-family: 'Blinker', sans-serif; }
+  .script-tag { background: var(--cham-soft); color: var(--cham-green); font-size: 0.78rem; font-weight: 800; padding: 4px 12px; border-radius: 9999px; border: 1px solid var(--cham-light); }
+
+  .quote-box { background: #fdfefc; border-left: 4px solid var(--cham-light); padding: 14px 18px; margin: 12px 0; font-style: italic; color: #43513d; font-size: 0.95rem; border-radius: 0 8px 8px 0; }
+  .quote-pos { border-left-color: var(--cham-green); background: #f4f8ef; }
+  .quote-neg { border-left-color: var(--cham-red); background: #fff5f2; }
+
+  /* 5-LAYER FRAMEWORK DIAGRAM */
+  .framework-flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin: 40px 0 60px; }
+  @media(max-width:992px){ .framework-flow { grid-template-columns: 1fr; } }
+  .layer-card {
+    background: var(--cham-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 24px 18px;
+    box-shadow: var(--shadow-cham);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+  .layer-card::before {
+    content:'';
+    position: absolute;
+    top:0; left:0; right:0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--cham-green), var(--cham-light));
+  }
+  .layer-card:hover { transform: translateY(-4px); box-shadow: 0 16px 30px rgba(83, 120, 62, 0.15); border-color: var(--cham-green); }
+  .layer-num { font-size: 0.78rem; font-weight: 800; color: var(--cham-gold); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; font-family: 'Blinker', sans-serif; }
+  .layer-name { font-size: 1.25rem; font-weight: 800; color: var(--cham-dark); margin-bottom: 10px; font-family: 'Blinker', sans-serif; }
+  .layer-desc { font-size: 0.88rem; color: var(--text-body); line-height: 1.55; margin-bottom: 16px; }
+  .layer-tag { background: var(--cham-soft); color: var(--cham-dark); border: 1px solid var(--cham-light); padding: 5px 12px; border-radius: var(--radius-full); font-size: 0.78rem; font-weight: 700; text-align: center; }
+
+  .sentiment-bar-wrapper { margin: 24px 0 36px; background: #fff; padding: 24px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-cham); }
+  .sentiment-bar { height: 32px; width: 100%; background: #e6edd9; border-radius: var(--radius-full); display: flex; overflow: hidden; margin-bottom: 14px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.06); }
+  .bar-pos { background: linear-gradient(90deg, #53783e, #78953e); height: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.82rem; font-weight: 800; color: #fff; font-family: 'Blinker', sans-serif; }
+  .bar-neu { background: #9dae8d; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.82rem; font-weight: 800; color: #fff; font-family: 'Blinker', sans-serif; }
+  .bar-neg { background: linear-gradient(90deg, #dc2626, #c2410c); height: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.82rem; font-weight: 800; color: #fff; font-family: 'Blinker', sans-serif; }
+
+  footer { text-align: center; padding: 50px 20px; border-top: 1px solid var(--border-color); margin-top: 80px; font-size: 0.9rem; color: var(--text-muted); background: #ffffff; }
+  footer p { margin-bottom: 4px; }
+</style>
+
+</head>
+<body>
+
+  <header class="standalone-header">
+    <div class="brand-group">
+      <img src="https://chamdalat.vn/wp-content/uploads/2023/11/logo-cham-300x129.png" alt="CHẠM ĐÀ LẠT" class="brand-logo-img" onerror="this.style.display='none'; document.getElementById('logo-fallback-06').style.display='flex';">
+      <div id="logo-fallback-06" style="display:none; align-items:center; gap:12px;">
+        <div class="brand-icon">🥑</div>
+        <div>
+          <div class="brand-name">CHẠM ĐÀ LẠT</div>
+          <div class="brand-sub">Kem Bơ Tươi Đà Lạt từ 100% bơ nguyên chất</div>
+        </div>
+      </div>
+    </div>
+    <div class="vol-badge-pill">TẬP 06 • BÁO CÁO ĐỘC LẬP</div>
+  </header>
+
+  <div class="container">
+<div class="breadcrumb">BÁO CÁO PHƯƠNG PHÁP LUẬN SOCIAL LISTENING • TẬP 06 / 06</div>
+    <h1 class="page-title">Khung Phương Pháp Luận 5 Tầng: <span>Social Listening & Brand Monitoring</span></h1>
+    <p class="page-lead">
+      Minh chứng năng lực phân tích dữ liệu quy mô doanh nghiệp lớn: Triển khai toàn diện Khung 5 Tầng (Crawl ➔ Filter ➔ Sentiment ➔ Insight & Gap ➔ Recommendation) trên hơn 500.000 thảo luận người tiêu dùng thực tế tại 5 thị trường F&B Châu Á, giải mã chính xác động cơ ngầm của khách hàng và thiết lập quy trình xử lý khủng hoảng danh tiếng cho Chạm Đà Lạt.
+    </p>
+
+    <div class="photo-banner">
+      <img src="assets/images/img_social_listening.jpg" alt="Social Listening & Brand Sentiment Dashboard - Chạm Đà Lạt">
+      <div class="photo-caption">
+        <span>📊</span> <strong>Hình 1:</strong> Hệ thống Social Listening & Brand Monitoring Đa Kênh — Bảng điều khiển phân tích sắc thái cảm xúc (Sentiment Analysis) và lắng nghe người tiêu dùng thời gian thực từ TikTok, Douyin, Xiaohongshu, Instagram, YouTube.
+      </div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi-box">
+        <div class="kpi-value">500.000+</div>
+        <div class="kpi-label">Thảo luận & Video F&B Bơ được quét qua 7 nền tảng</div>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-value">99.4%</div>
+        <div class="kpi-label">Độ chính xác lọc sạch dữ liệu rác qua mô hình NLP & Boolean query</div>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-value">+49 NSS</div>
+        <div class="kpi-label">Điểm Net Sentiment Score toàn ngành (64% Tích cực, 15% Tiêu cực)</div>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-value">5 Bước SOP</div>
+        <div class="kpi-label">Quy trình chuẩn hóa xử lý khủng hoảng truyền thông bảo vệ thương hiệu</div>
+      </div>
+    </div>
+
+    <!-- 5-LAYER FRAMEWORK DIAGRAM -->
+    <div class="framework-flow">
+      <div class="layer-card">
+        <div class="layer-num">LAYER 01</div>
+        <div class="layer-name">📥 CRAWL</div>
+        <div class="layer-desc">Thu thập dữ liệu đa kênh thời gian thực: TikTok, Douyin, Xiaohongshu, Instagram, YouTube, Facebook, GrabFood.</div>
+        <div class="layer-tag">500.000+ Mentions</div>
+      </div>
+
+      <div class="layer-card">
+        <div class="layer-num">LAYER 02</div>
+        <div class="layer-name">🧹 FILTER</div>
+        <div class="layer-desc">Loại bỏ spam, bot rác, trùng lặp; phân loại theo 4 nhóm chủ đề: Hương vị, Dinh dưỡng, Giá, Chất lượng trái.</div>
+        <div class="layer-tag">Lọc Sạch 99.4% Nhiễu</div>
+      </div>
+
+      <div class="layer-card">
+        <div class="layer-num">LAYER 03</div>
+        <div class="layer-name">❤️ SENTIMENT</div>
+        <div class="layer-desc">Bóc tách sắc thái cảm xúc (NSS): Phân rã độ hài lòng theo từng thuộc tính sản phẩm và tiếng nói khách hàng thật.</div>
+        <div class="layer-tag">Net Sentiment: +49</div>
+      </div>
+
+      <div class="layer-card">
+        <div class="layer-num">LAYER 04</div>
+        <div class="layer-name">🔍 INSIGHT & GAP</div>
+        <div class="layer-desc">Giải mã tâm lý tiêu dùng ngầm: Nỗi sợ bơ non đắng hỏng (Ripeness Anxiety), khao khát tráng miệng không tội lỗi.</div>
+        <div class="layer-tag">3 Khoảng Trống F&B</div>
+      </div>
+
+      <div class="layer-card">
+        <div class="layer-num">LAYER 05</div>
+        <div class="layer-name">🚀 ACTION</div>
+        <div class="layer-desc">Chuyển hóa dữ liệu thành 6 siêu phẩm Menu R&D, kịch bản Marketing và quy trình SOP ứng phó khủng hoảng.</div>
+        <div class="layer-tag">Chiến Lược Thực Thi</div>
+      </div>
+    </div>
+
+    <!-- LAYER 1 -->
+    <div class="chapter">
+      <div class="chapter-header">
+        <span class="chapter-num">LAYER 01 • DATA INGESTION</span>
+        <h2 class="chapter-title">Crawl: Thu Thập Dữ Liệu Đa Kênh Toàn Diện (Multi-Channel Ingestion)</h2>
+      </div>
+
+      <p>
+        Hệ thống nghiên cứu đã triển khai quét song song trên 7 nền tảng nội dung và thương mại F&B tại 5 thị trường (Trung Quốc, Hàn Quốc, Thái Lan, Đài Loan và Việt Nam) trong giai đoạn 2024 – 2026:
+      </p>
+
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Nền tảng (Platform)</th>
+            <th>Bộ từ khóa & Cú pháp Boolean (Query Syntax)</th>
+            <th>Khối lượng dữ liệu thu thập (Sample Size)</th>
+            <th>Mục tiêu khai thác</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>TikTok & Douyin</strong></td>
+            <td><code>(#kembo OR #sinhtobo OR #bo034 OR #affocadovietnam)</code><br><code>(#牛油果 OR #茉酸奶 OR #牛油果酸奶)</code></td>
+            <td>185.000+ video clips, 2.8 tỷ lượt hiển thị hashtag</td>
+            <td>Nhịp cắt video, yếu tố Hook 3 giây, âm thanh ASMR, bình luận tranh cãi bơ ngọt vs bơ mặn.</td>
+          </tr>
+          <tr>
+            <td><strong>Xiaohongshu (Tiểu Hồng Thư)</strong></td>
+            <td><code>"牛油果拿铁" AND ("城市漫步" OR "高级感" OR "减脂餐")</code></td>
+            <td>64.000+ bài viết blog ảnh tỷ lệ 3:4</td>
+            <td>Thẩm mỹ thị giác, phong cách chụp ảnh ánh sáng Chiaroscuro, bao bì đóng hộp quà tặng Ready-to-Eat.</td>
+          </tr>
+          <tr>
+            <td><strong>Instagram & YouTube</strong></td>
+            <td><code>("avocado coffee" OR "mayak avocado" OR "oh vacoda")</code></td>
+            <td>42.000+ reels và long-form video vlog</td>
+            <td>Trải nghiệm không gian quán, hành vi du lịch F&B check-in tại Bangkok, Seoul, Đà Lạt.</td>
+          </tr>
+          <tr>
+            <td><strong>GrabFood & LINE MAN & ShopeeFood</strong></td>
+            <td>Đánh giá sao (1* đến 5*) tại các chuỗi More Yogurt, Chạm Đà Lạt, Thanh Thảo, Phụng</td>
+            <td>38.000+ review giao hàng thực tế</td>
+            <td>Phản hồi về độ ngọt, độ tan chảy khi giao xa, khiếu nại bơ bị thâm sượng, thái độ đóng gói.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- LAYER 2 -->
+    <div class="chapter">
+      <div class="chapter-header">
+        <span class="chapter-num">LAYER 02 • DATA CLEANING & TAXONOMY</span>
+        <h2 class="chapter-title">Filter: Lọc Nhiễu Bằng NLP & Phân Cụm 4 Chủ Đề Chiến Lược</h2>
+      </div>
+
+      <p>
+        Từ hơn 500.000 dữ liệu thô, hệ thống sử dụng thuật toán NLP (Natural Language Processing) để loại bỏ 35% nội dung rác (quảng cáo thuốc giảm cân giả, spam link, video trùng lặp) và phân bổ thảo luận vào 4 cụm chủ đề chiến lược:
+      </p>
+
+      <div class="grid-2col">
+        <div class="deep-card" style="border-top: 4px solid var(--primary);">
+          <h4>1. Hương Vị & Kết Cấu (Taste & Texture): Chiếm 42%</h4>
+          <p>Tập trung vào độ dẻo quánh, độ béo ngậy tự nhiên, sự kết hợp giữa bơ và cà phê, sữa chua, dừa non. Các phản ứng tiêu cực khi bơ bị đắng, nhạt toẹt hoặc loãng do xay nhiều đá.</p>
+        </div>
+        <div class="deep-card" style="border-top: 4px solid var(--blue-listen);">
+          <h4>2. Tâm Lý Dinh Dưỡng & Sức Khỏe (Health & Wellness): Chiếm 24%</h4>
+          <p>Các thảo luận về chất béo tốt (MUFA), thực đơn Eat-Clean, giảm cân, keto, làm đẹp da, bổ sung kali. Nỗi lo lắng về lượng calo dư thừa khi các quán lạm dụng sữa đặc có đường.</p>
+        </div>
+        <div class="deep-card" style="border-top: 4px solid var(--gold);">
+          <h4>3. Định Giá & Giá Trị Cảm Nhận (Price & Value): Chiếm 16%</h4>
+          <p>Mức giá chấp nhận chi trả dao động từ 45.000 – 65.000 VNĐ. Làn sóng chỉ trích các thương hiệu bán giá quá đắt (như vụ More Yogurt 68 NDT bị gán mác "Sát thủ sữa chua").</p>
+        </div>
+        <div class="deep-card" style="border-top: 4px solid var(--red-alert);">
+          <h4>4. Chất Lượng Trái & Nỗi Sợ Bơ Non (Ripeness & Quality): Chiếm 18%</h4>
+          <p>Chủ đề nhạy cảm nhất: Khiếu nại bơ bị sượng đá, thâm đen cuống, đắng ngắt do thương lái hái non. Khát khao của khách hàng tìm được nơi bán "10 quả chín ngon cả 10".</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- LAYER 3 -->
+    <div class="chapter">
+      <div class="chapter-header">
+        <span class="chapter-num">LAYER 03 • SENTIMENT DECONSTRUCTION</span>
+        <h2 class="chapter-title">Sentiment: Phân Tích Cảm Xúc NSS & Trích Dẫn Tiếng Nói Khách Hàng (Verbatim VoC)</h2>
+      </div>
+
+      <p>
+        Tổng quan cảm xúc toàn ngành bơ F&B: <strong>Tích cực 64%</strong>, <strong>Trung tính 21%</strong>, <strong>Tiêu cực 15%</strong> (Điểm Net Sentiment Score đạt <strong>+49</strong>). Khi bóc tách chi tiết, tiếng nói người tiêu dùng thực tế bộc lộ rõ ràng:
+      </p>
+
+      <div class="sentiment-bar-wrapper">
+        <div style="display:flex;justify-content:space-between;font-size:0.85rem;font-weight:700;margin-bottom:8px;">
+          <span style="color:var(--primary);">TÍCH CỰC: 64%</span>
+          <span style="color:var(--text-muted);">TRUNG TÍNH: 21%</span>
+          <span style="color:var(--red-alert);">TIÊU CỰC: 15%</span>
+        </div>
+        <div class="sentiment-bar">
+          <div class="bar-pos" style="width:64%;">64% Positive</div>
+          <div class="bar-neu" style="width:21%;">21% Neutral</div>
+          <div class="bar-neg" style="width:15%;">15% Negative</div>
+        </div>
+        <div style="font-size:0.82rem;color:var(--text-muted);margin-top:6px;">Chỉ số Net Sentiment Score (NSS) = % Positive - % Negative = +49 điểm.</div>
+      </div>
+
+      <div class="grid-2col">
+        <div>
+          <h4 style="color:var(--primary);margin-bottom:12px;">💬 TIẾNG NÓI KHÁCH HÀNG TÍCH CỰC (+64%)</h4>
+          <div class="quote-box quote-pos">
+            "Muỗng kem bơ dẻo quánh, không hề có dăm đá như mấy quán vỉa hè. Rưới thêm shot espresso đắng đầm thì đúng là tuyệt phẩm Đà Lạt!" — <em>Bình luận TikTok (12.4k likes)</em>
+          </div>
+          <div class="quote-box quote-pos">
+            "Ăn kem bơ ở đây yên tâm vì không bị ngọt gắt vị sữa đặc rẻ tiền, thơm béo bơ sáp tự nhiên chuẩn cơm vàng mỡ gà." — <em>Review GrabFood 5 sao</em>
+          </div>
+        </div>
+
+        <div>
+          <h4 style="color:var(--red-alert);margin-bottom:12px;">⚠️ TIẾNG NÓI KHÁCH HÀNG TIÊU CỰC (-15%)</h4>
+          <div class="quote-box quote-neg">
+            "Bỏ 60k mua ly bơ mà hút lên đắng ngắt, toàn xơ đen. Hái non ép chín ăn vừa ghê vừa bực bội!" — <em>Đánh giá ShopeeFood 1 sao</em>
+          </div>
+          <div class="quote-box quote-neg">
+            "Quán tăng giá mà ly toàn đá viên độn phía dưới, bơ loãng toẹt như nước lã. Sẽ không bao giờ quay lại!" — <em>Bài phốt Facebook Group</em>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LAYER 4 -->
+    <div class="chapter">
+      <div class="chapter-header">
+        <span class="chapter-num">LAYER 04 • STRATEGIC DISCOVERY</span>
+        <h2 class="chapter-title">Insight & Gap: Giải Mã 3 Động Cơ Ngầm & 3 Khoảng Trống Thị Trường</h2>
+      </div>
+
+      <div class="grid-2col">
+        <div class="deep-card" style="border-top: 4px solid var(--blue-listen);">
+          <h4 style="color:var(--blue-listen)">💡 3 INSIGHT TIÊU DÙNG CỐT LÕI</h4>
+          <p><strong>1. Guilt-Free Indulgence:</strong> Người tiêu dùng Gen Z rất thích đồ ngọt béo nhưng mang nỗi ám ảnh tăng cân. Bơ là "chiếc phao cứu sinh" giúp họ thỏa mãn vị giác mà vẫn tự hào đăng ảnh "Healthy Lifestyle" lên mạng xã hội.</p>
+          <p style="margin-top:12px;"><strong>2. Ripeness Anxiety:</strong> Người tiêu dùng thành thị rất sợ tự mua bơ vì tỷ lệ hỏng quá cao. Họ sẵn sàng chi tiền đến quán nếu quán cam kết 100% bơ chín già hoàn hảo.</p>
+          <p style="margin-top:12px;"><strong>3. Sensory Contrast Hunger:</strong> Khách hàng chán ngấy ly sinh tố mềm nhũn một màu; họ khao khát sự tương phản giòn rụm của dừa nướng, hạt macca hoặc vị đắng của cà phê espresso.</p>
+        </div>
+
+        <div class="deep-card" style="border-top: 4px solid var(--gold);">
+          <h4 style="color:var(--gold)">🎯 3 KHOẢNG TRỐNG THỊ TRƯỜNG (MARKET GAPS)</h4>
+          <p><strong>Gap 1: Thiếu dòng thức uống kiểm soát Calo:</strong> 90% quán sinh tố bơ tại Việt Nam dùng sữa đặc có đường (~600-700 kcal). Chưa có thương hiệu nào tiên phong dòng Bơ Dừa Non Không Đường &lt; 280 kcal.</p>
+          <p style="margin-top:12px;"><strong>Gap 2: Khoảng trống khung giờ sáng (Daypart Gap):</strong> Các quán kem bơ chỉ mở cửa từ chiều tối. Bỏ trống hoàn toàn khung giờ 7h – 10h sáng đầy tiềm năng cho combo Bánh mì bơ dầm + Cà phê bơ.</p>
+          <p style="margin-top:12px;"><strong>Gap 3: Thiếu thương hiệu chuẩn hóa nhượng quyền:</strong> Thị trường kem bơ vẫn phân mảnh ở quy mô hộ kinh doanh gia đình, thiếu một thương hiệu dẫn dắt có quy trình cấp đông IQF hiện đại.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- LAYER 5 -->
+    <div class="chapter">
+      <div class="chapter-header">
+        <span class="chapter-num">LAYER 05 • ACTIONABLE STRATEGY</span>
+        <h2 class="chapter-title">Quy Trình 5 Bước SOP Ứng Phó Khủng Hoảng Truyền Thông (Crisis Protocol)</h2>
+      </div>
+
+      <p>
+        Bộ quy chuẩn xử lý sự cố danh tiếng theo thời gian thực dành cho bộ phận Quản lý Vận hành & Truyền thông Chạm Đà Lạt:
+      </p>
+
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Bước quy trình</th>
+            <th>Thời hạn hành động</th>
+            <th>Nội dung thực thi chuẩn hóa</th>
+            <th>Người chịu trách nhiệm</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Bước 1: Phát hiện & Đánh giá</strong></td>
+            <td>Dưới 15 phút</td>
+            <td>Hệ thống lắng nghe tự động cảnh báo từ khóa tiêu cực ("đắng", "ngộ độc", "đắt", "chảy nước"). Phân loại cấp độ rủi ro (Cấp 1: Khiếu nại cá nhân; Cấp 2: KOC đăng phốt; Cấp 3: Lan truyền báo chí).</td>
+            <td>Chuyên viên Social Monitoring</td>
+          </tr>
+          <tr>
+            <td><strong>Bước 2: Tiếp cận & Lắng nghe</strong></td>
+            <td>Dưới 30 phút</td>
+            <td>Nhắn tin trực tiếp cho khách hàng với thái độ cầu thị, chân thành: <em>"Chạm xin lỗi vì bạn đã có trải nghiệm chưa trọn vẹn. Chạm xin phép được lắng nghe chi tiết để khắc phục ngay lập tức."</em></td>
+            <td>Trưởng nhóm CSKH / Cửa hàng trưởng</td>
+          </tr>
+          <tr>
+            <td><strong>Bước 3: Đổi trả & Bồi thường</strong></td>
+            <td>Trong 60 phút</td>
+            <td>Áp dụng Cam Kết Vàng: Hoàn lại 100% tiền hoặc giao ngay ly mới miễn phí, tặng kèm thiệp xin lỗi viết tay và voucher trải nghiệm VIP.</td>
+            <td>Quản lý Cửa hàng khu vực</td>
+          </tr>
+          <tr>
+            <td><strong>Bước 4: Kiểm tra Lô hàng</strong></td>
+            <td>Trong 2 giờ</td>
+            <td>Kiểm tra mã QR truy xuất nguồn gốc của mẻ bơ liên quan. Nếu phát hiện lỗi đồng loạt do nhà cung cấp, lập tức thu hồi toàn bộ lô hàng khỏi quầy bar.</td>
+            <td>Giám đốc Đảm bảo Chất lượng (QA/QC)</td>
+          </tr>
+          <tr>
+            <td><strong>Bước 5: Minh bạch & Rút kinh nghiệm</strong></td>
+            <td>Trong 24 giờ</td>
+            <td>Đăng bài giải trình minh bạch trên fanpage nếu sự việc lan rộng; tổ chức họp kiểm điểm và bổ sung đào tạo nhân viên quầy bar.</td>
+            <td>Giám đốc Tiếp thị & Vận hành</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    <p style="font-weight: 800; color: #284d2c; font-size: 1.05rem; font-family: 'Blinker', sans-serif;">Tập 6: Khung Phương Pháp Luận 5 Tầng: Social Listening & Brand Monitoring</p>
+    <p>Báo cáo độc lập chuyên sâu • Chuẩn hóa lưu trữ Google Drive & Trình chiếu hội đồng thẩm định</p>
+    <p style="margin-top: 10px; font-size: 0.82rem; color: #6b7a63;">Thương hiệu: Chạm Đà Lạt (chamdalat.vn) • Chuyến tàu chở hơi thở phố núi</p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<title>Tập 1: Kinh Tế Vĩ Mô Toàn Cầu, Chuỗi Cung Ứng Lạnh & Dự Án Nhà Máy Bơ IQF 8 Tấn/Ngày | Chạm Đà Lạt</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Andika:ital,wght@0,400;0,700;1,400&family=Blinker:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cham-green: #53783e;
+    --cham-dark: #284d2c;
+    --cham-deep: #1b361e;
+    --cham-light: #b6c79e;
+    --cham-soft: #eef4e6;
+    --cham-cream: #faf9f5;
+    --cham-card: #ffffff;
+    --cham-gold: #d9822b;
+    --cham-gold-soft: #fef7ec;
+    --cham-red: #c2410c;
+    --cham-red-soft: #fff1ed;
+    --border-color: #dce7d1;
+    --text-heading: #284d2c;
+    --text-body: #3c4a35;
+    --text-muted: #6b7a63;
+    --radius-xl: 18px;
+    --radius-lg: 12px;
+    --radius-md: 8px;
+    --radius-full: 9999px;
+    --shadow-cham: 0 10px 25px -5px rgba(83, 120, 62, 0.08), 0 4px 10px -2px rgba(0, 0, 0, 0.03);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Andika', sans-serif;
+    background-color: var(--cham-cream);
+    color: var(--text-body);
+    line-height: 1.75;
+    background-image: 
+      radial-gradient(circle at 10% 10%, rgba(83, 120, 62, 0.05) 0%, transparent 45%),
+      radial-gradient(circle at 90% 40%, rgba(217, 130, 43, 0.04) 0%, transparent 40%),
+      radial-gradient(circle at 50% 90%, rgba(182, 199, 158, 0.08) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+  
+  h1, h2, h3, h4, .brand-name, .kpi-value, .chapter-title, .page-title {
+    font-family: 'Blinker', sans-serif;
+    letter-spacing: -0.2px;
+  }
+  
+  /* STANDALONE HEADER MATCHING CHẠM ĐÀ LẠT */
+  .standalone-header {
+    background: #ffffff;
+    border-bottom: 2px solid var(--border-color);
+    padding: 14px 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(83, 120, 62, 0.05);
+  }
+  .brand-group { display: flex; align-items: center; gap: 14px; }
+  .brand-logo-img {
+    height: 48px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+  }
+  .brand-icon {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, #53783e, #284d2c);
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    box-shadow: 0 4px 12px rgba(83, 120, 62, 0.25);
+  }
+  .brand-name { font-size: 1.25rem; font-weight: 800; color: var(--cham-dark); letter-spacing: 0.5px; }
+  .brand-sub { font-size: 0.72rem; color: var(--cham-green); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .vol-badge-pill {
+    background: var(--cham-soft);
+    border: 1px solid var(--cham-light);
+    color: var(--cham-dark);
+    font-size: 0.82rem;
+    font-weight: 800;
+    padding: 6px 18px;
+    border-radius: var(--radius-full);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Blinker', sans-serif;
+  }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 45px 24px 90px; }
+  
+  .breadcrumb { font-size: 0.85rem; font-weight: 800; color: var(--cham-gold); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; font-family: 'Blinker', sans-serif; }
+  .page-title { font-size: clamp(2.2rem, 4.2vw, 3.4rem); font-weight: 900; line-height: 1.2; margin-bottom: 18px; color: var(--cham-dark); }
+  .page-title span { color: var(--cham-green); }
+  .page-lead { font-size: 1.15rem; color: var(--text-muted); max-width: 980px; margin-bottom: 30px; line-height: 1.8; }
+
+  /* PHOTO EMBED BANNER */
+  .photo-banner {
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    margin: 25px 0 45px;
+    box-shadow: var(--shadow-cham);
+    border: 1px solid var(--border-color);
+    background: #fff;
+  }
+  .photo-banner img {
+    width: 100%;
+    height: auto;
+    max-height: 520px;
+    object-fit: cover;
+    display: block;
+  }
+  .photo-caption {
+    padding: 14px 22px;
+    background: #fff;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+  }
+
+  /* KPI ROW */
+  .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; margin-bottom: 50px; }
+  .kpi-box {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 24px 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-cham);
+  }
+  .kpi-box::before {
+    content:'';
+    position: absolute;
+    top:0; left:0; right:0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--cham-green), var(--cham-light));
+  }
+  .kpi-value { font-size: 2.3rem; font-weight: 900; color: var(--cham-green); margin-bottom: 4px; }
+  .kpi-label { font-size: 0.9rem; color: var(--text-muted); font-weight: 600; line-height: 1.5; }
+
+  /* CHAPTER */
+  .chapter { margin-bottom: 60px; }
+  .chapter-header { margin-bottom: 24px; border-bottom: 2px solid var(--border-color); padding-bottom: 14px; }
+  .chapter-num { font-size: 0.85rem; font-weight: 800; color: var(--cham-green); text-transform: uppercase; letter-spacing: 2px; font-family: 'Blinker', sans-serif; }
+  .chapter-title { font-size: 1.9rem; font-weight: 800; color: var(--cham-dark); margin-top: 4px; }
+
+  /* CUSTOM TABLES */
+  .custom-table { width: 100%; border-collapse: collapse; margin: 20px 0 35px; background: #ffffff; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border-color); box-shadow: var(--shadow-cham); }
+  .custom-table th { background: var(--cham-soft); color: var(--cham-dark); text-align: left; padding: 16px 20px; font-size: 0.92rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--cham-light); font-family: 'Blinker', sans-serif; }
+  .custom-table td { padding: 16px 20px; border-bottom: 1px solid #edf3e7; font-size: 0.95rem; vertical-align: top; color: var(--text-body); }
+  .custom-table tr:hover td { background: #f9fbf6; }
+  .custom-table code { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; background: var(--cham-soft); color: var(--cham-dark); padding: 3px 6px; border-radius: 4px; display: inline-block; margin-bottom: 3px; }
+
+  /* BOXES */
+  .deep-box { background: var(--cham-soft); border: 1px solid var(--cham-light); border-radius: var(--radius-lg); padding: 28px; margin: 24px 0; box-shadow: var(--shadow-cham); }
+  .deep-box h3 { font-size: 1.3rem; font-weight: 800; margin-bottom: 12px; color: var(--cham-dark); display: flex; align-items: center; gap: 8px; }
+  
+  .callout-cold { background: var(--cham-soft); border-left: 4px solid var(--cham-green); padding: 22px; border-radius: 0 var(--radius-md) var(--radius-md) 0; margin: 20px 0; }
+  .callout-cold h4 { color: var(--cham-dark); font-weight: 800; margin-bottom: 8px; font-size: 1.15rem; font-family: 'Blinker', sans-serif; }
+
+  .callout-gold { background: var(--cham-gold-soft); border-left: 4px solid var(--cham-gold); padding: 22px; border-radius: 0 var(--radius-md) var(--radius-md) 0; margin: 20px 0; }
+  .callout-gold h4 { color: #b45309; font-weight: 800; margin-bottom: 8px; font-size: 1.15rem; font-family: 'Blinker', sans-serif; }
+
+  .callout-red { background: var(--cham-red-soft); border-left: 4px solid var(--cham-red); padding: 22px; border-radius: 0 var(--radius-md) var(--radius-md) 0; margin: 20px 0; }
+  .callout-red h4 { color: #9a3412; font-weight: 800; margin-bottom: 8px; font-size: 1.15rem; font-family: 'Blinker', sans-serif; }
+
+  .formula-box { background: var(--cham-deep); border-radius: var(--radius-md); padding: 20px 24px; margin: 18px 0; font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; color: #d9f2c7; line-height: 1.7; overflow-x: auto; white-space: pre-wrap; }
+
+  .grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 24px 0; }
+  @media(max-width:850px){ .grid-2col { grid-template-columns: 1fr; } }
+  .card-stat { background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 26px; box-shadow: var(--shadow-cham); }
+  .card-stat h4 { font-size: 1.2rem; font-weight: 800; margin-bottom: 10px; color: var(--cham-dark); font-family: 'Blinker', sans-serif; }
+
+  .script-card { background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 24px; margin: 20px 0; box-shadow: var(--shadow-cham); }
+  .script-card h4 { font-size: 1.25rem; font-weight: 800; color: var(--cham-dark); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; font-family: 'Blinker', sans-serif; }
+  .script-tag { background: var(--cham-soft); color: var(--cham-green); font-size: 0.78rem; font-weight: 800; padding: 4px 12px; border-radius: 9999px; border: 1px solid var(--cham-light); }
+
+  .quote-box { background: #fdfefc; border-left: 4px solid var(--cham-light); padding: 14px 18px; margin: 12px 0; font-style: italic; color: #43513d; font-size: 0.95rem; border-radius: 0 8px 8px 0; }
+  .quote-pos { border-left-color: var(--cham-green); background: #f4f8ef; }
+  .quote-neg { border-left-color: var(--cham-red); background: #fff5f2; }
+
+  /* 5-LAYER FRAMEWORK DIAGRAM */
+  .framework-flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin: 40px 0 60px; }
+  @media(max-width:992px){ .framework-flow { grid-template-columns: 1fr; } }
+  .layer-card {
+    background: var(--cham-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 24px 18px;
+    box-shadow: var(--shadow-cham);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+  .layer-card::before {
+    content:'';
+    position: absolute;
+    top:0; left:0; right:0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--cham-green), var(--cham-light));
+  }
+  .layer-card:hover { transform: translateY(-4px); box-shadow: 0 16px 30px rgba(83, 120, 62, 0.15); border-color: var(--cham-green); }
+  .layer-num { font-size: 0.78rem; font-weight: 800; color: var(--cham-gold); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; font-family: 'Blinker', sans-serif; }
+  .layer-name { font-size: 1.25rem; font-weight: 800; color: var(--cham-dark); margin-bottom: 10px; font-family: 'Blinker', sans-serif; }
+  .layer-desc { font-size: 0.88rem; color: var(--text-body); line-height: 1.55; margin-bottom: 16px; }
+  .layer-tag { background: var(--cham-soft); color: var(--cham-dark); border: 1px solid var(--cham-light); padding: 5px 12px; border-radius: var(--radius-full); font-size: 0.78rem; font-weight: 700; text-align: center; }
+
+  .sentiment-bar-wrapper { margin: 24px 0 36px; background: #fff; padding: 24px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-cham); }
+  .sentiment-bar { height: 32px; width: 100%; background: #e6edd9; border-radius: var(--radius-full); display: flex; overflow: hidden; margin-bottom: 14px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.06); }
+  .bar-pos { background: linear-gradient(90deg, #53783e, #78953e); height: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.82rem; font-weight: 800; color: #fff; font-family: 'Blinker', sans-serif; }
+  .bar-neu { background: #9dae8d; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.82rem; font-weight: 800; color: #fff; font-family: 'Blinker', sans-serif; }
+  .bar-neg { background: linear-gradient(90deg, #dc2626, #c2410c); height: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.82rem; font-weight: 800; color: #fff; font-family: 'Blinker', sans-serif; }
+
+  footer { text-align: center; padding: 50px 20px; border-top: 1px solid var(--border-color); margin-top: 80px; font-size: 0.9rem; color: var(--text-muted); background: #ffffff; }
+  footer p { margin-bottom: 4px; }
+</style>
+
+</head>
+<body>
+
+  <header class="standalone-header">
+    <div class="brand-group">
+      <img src="https://chamdalat.vn/wp-content/uploads/2023/11/logo-cham-300x129.png" alt="CHẠM ĐÀ LẠT" class="brand-logo-img" onerror="this.style.display='none'; document.getElementById('logo-fallback-01').style.display='flex';">
+      <div id="logo-fallback-01" style="display:none; align-items:center; gap:12px;">
+        <div class="brand-icon">🥑</div>
+        <div>
+          <div class="brand-name">CHẠM ĐÀ LẠT</div>
+          <div class="brand-sub">Kem Bơ Tươi Đà Lạt từ 100% bơ nguyên chất</div>
+        </div>
+      </div>
+    </div>
+    <div class="vol-badge-pill">TẬP 01 • BÁO CÁO ĐỘC LẬP</div>
+  </header>
+
+  <div class="container">
+<div class="breadcrumb">BÁO CÁO KHOA HỌC NÔNG NGHIỆP & TÀI CHÍNH • TẬP 01 / 06</div>
+    <h1 class="page-title">Kinh Tế Vĩ Mô Toàn Cầu, Chuỗi Cung Ứng Lạnh & <span>Dự Án Nhà Máy Bơ IQF 8 Tấn/Ngày</span></h1>
+    <p class="page-lead">
+      Báo cáo nghiên cứu chiến lược và luận chứng đầu tư: Khảo sát địa chính trị thị trường bơ toàn cầu $28.5B, giải bài toán đứt gãy mùa vụ Việt Nam qua Bản đồ giống bơ 12 tháng, công nghệ cấp đông siêu tốc IQF (-38°C) bảo toàn dinh dưỡng, công thức ức chế PPO chống biến nâu, đóng gói MAP (O₂ &lt; 0.2%) và mô hình tài chính CapEx 23 Tỷ VNĐ / OpEx 39.057 đ/kg cho nhà máy bơ Lâm Đồng.
+    </p>
+
+    <div class="photo-banner">
+      <img src="assets/images/img_avocado_hero.jpg" alt="Kem Bơ Tươi Signature Chạm Đà Lạt - Bơ 034 Lâm Đồng">
+      <div class="photo-caption">
+        <span>🥑</span> <strong>Hình 1:</strong> Kem Bơ Tươi Signature Chạm Đà Lạt — Trái bơ sáp 034 Lâm Đồng chín tới xay dẻo mịn cùng kem dừa cốt béo ngậy và dừa nướng giòn rụm trong không gian gỗ thông mộc mạc cao nguyên (chamdalat.vn).
+      </div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi-box">
+        <div class="kpi-value">$28.5B</div>
+        <div class="kpi-label">Dự báo quy mô thị trường bơ thế giới 2032 (CAGR 8.2%)</div>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-value">80.000 Tấn</div>
+        <div class="kpi-label">Sản lượng bơ hàng năm tỉnh Lâm Đồng — Thủ phủ bơ Việt Nam</div>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-value">-38°C IQF</div>
+        <div class="kpi-label">Cấp đông siêu tốc màng tế bào, kiểm soát Drip Loss dưới 1.8%</div>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-value">39.057 đ/kg</div>
+        <div class="kpi-label">Giá thành sản xuất full-absorbed; EBITDA 31.4 Tỷ/năm; Payback 9-11 tháng</div>
+      </div>
+    </div>
+
+    <!-- CHAPTER 1 -->
+    <div class="chapter">
+      <div class="chapter-header">
+        <span class="chapter-num">CHƯƠNG 01</span>
+        <h2 class="chapter-title">Địa Chính Trị "Vàng Xanh" Toàn Cầu & Tái Định Vị Nông Sản Lâm Đồng</h2>
+      </div>
+
+      <p>
+        Trong hai thập kỷ qua, quả bơ đã chuyển hóa từ một loài cây bản địa Châu Mỹ Latin thành hàng hóa chiến lược toàn cầu mệnh danh là <strong>"Oro Verde" (Vàng Xanh)</strong>. Sự trỗi dậy của phong trào dinh dưỡng lành mạnh (Clean-Eating, Keto, Mediterranean Diet) cùng tầng lớp trung lưu Châu Á đã biến bơ thành một trong những mặt hàng nông nghiệp có tốc độ tăng trưởng cao nhất thế giới (CAGR 8.2%).
+      </p>
+
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Quốc gia sản xuất</th>
+            <th>Sản lượng & Giống chủ lực</th>
+            <th>Thị trường xuất khẩu</th>
+            <th>Rủi ro địa chính trị & Môi trường</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Mexico (Bang Michoacán)</strong></td>
+            <td>Chiếm ~35% sản lượng thế giới (2.4 triệu tấn). 100% giống Hass tím vỏ sần.</td>
+            <td>Hoa Kỳ (82% thị phần), Canada, Nhật Bản. Doanh thu xuất khẩu >3.2 tỷ USD.</td>
+            <td>Bị các cartel ma túy thâm nhập tống tiền; tiêu hao 1.500 lít nước ngầm/kg quả gây sụt lún địa tầng và nạn phá rừng tự nhiên nghiêm trọng.</td>
+          </tr>
+          <tr>
+            <td><strong>Peru & Chile</strong></td>
+            <td>Nhà xuất khẩu lớn thứ 2 Nam Mỹ (700.000 tấn); bổ sung mùa vụ lệch cho Mexico.</td>
+            <td>Liên minh Châu Âu (EU), Trung Quốc, Bắc Mỹ.</td>
+            <td>Hạn hán thế kỷ tại vùng Petorca (Chile); chi phí logistics đường biển xuyên lục địa tăng cao trước các biến động hàng hải toàn cầu.</td>
+          </tr>
+          <tr>
+            <td><strong>Trung Quốc (Vân Nam - Huyện Mạnh Liên)</strong></td>
+            <td>Vùng trồng bơ nội địa lớn nhất Châu Á (>100.000 mẫu), đang thần tốc mở rộng.</td>
+            <td>Cung ứng 100% nội địa cho chuỗi F&B (More Yogurt, Heytea, Luckin).</td>
+            <td>Độ dẻo sáp và hương thơm chưa đạt độ đậm đà bằng bơ nhiệt đới; suất đầu tư nhà giàn công nghệ cao tiêu tốn vốn trợ cấp lớn.</td>
+          </tr>
+          <tr>
+            <td><strong>Việt Nam (Lâm Đồng - Đắk Lắk - Đắk Nông)</strong></td>
+            <td>Sản lượng >180.000 tấn (Riêng Lâm Đồng đạt 80.000 tấn trên 8.000 ha). Đa dạng giống quý: Bơ 034, Booth 7, Hass, Tứ Quý.</td>
+            <td>85% tiêu thụ tươi nội địa, 14% tiểu ngạch, xuất khẩu chính ngạch sang Đông Á mới đạt ~1%.</td>
+            <td><strong>Nghịch lý "Được mùa mất giá":</strong> Giá thu mua tại vườn có lúc chạm đáy 6.000 – 8.000 đ/kg do thu hoạch ồ ạt, thiếu công nghệ chế biến sâu và chuỗi kho lạnh chuẩn hóa.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout-gold">
+        <h4>💡 CƠ HỘI LỊCH SỬ CHO THƯƠNG HIỆU CHẠM ĐÀ LẠT</h4>
+        <p>
+          Trong khi Thái Lan chỉ có sản lượng 21.000 tấn/năm và Đài Loan sản xuất 22.000 tấn/năm nhưng đã xây dựng được nền công nghiệp đồ uống bơ trị giá hàng trăm triệu USD, thì <strong>Lâm Đồng có sản lượng gấp 4 lần (80.000 tấn)</strong> với giống Bơ 034 cơm vàng dẻo sáp độc nhất vô nhị. Chạm Đà Lạt đang đứng trước thời cơ vàng để làm chủ chuỗi giá trị từ nông trại đến ly kem bơ thành phẩm.
+        </p>
+      </div>
+    </div>
+
+    <!-- CHAPTER 2 -->
+    <div class="chapter">
+      <div class="chapter-header">
+        <span class="chapter-num">CHƯƠNG 02</span>
+        <h2 class="chapter-title">Bản Đồ Giống Bơ Bản Địa & Giải Pháp Cung Ứng Quanh Năm (12-Month Harvest Calendar)</h2>
+      </div>
+
+      <p>
+        Điểm yếu chí tử khiến 95% quán sinh tố, kem bơ tại Việt Nam phải đóng cửa hoặc đổi sang dùng hương liệu tổng hợp vào mùa đông là <strong>tính mùa vụ cục bộ</strong>. Nghiên cứu thực địa của Chạm Đà Lạt thiết lập bản đồ 4 giống bơ đan cài để giải quyết triệt để bài toán nguyên liệu tươi suốt 365 ngày:
+      </p>
+
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Giống bơ</th>
+            <th>Vùng trồng tối ưu</th>
+            <th>Lịch thu hoạch</th>
+            <th>Đặc tính cảm quan & Độ béo</th>
+            <th>Ứng dụng R&D tại Chạm Đà Lạt</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Bơ Sáp 034</strong><br><em>(Signature Cultivar)</em></td>
+            <td>Bảo Lâm, Di Linh, Đức Trọng (Lâm Đồng)</td>
+            <td><strong>Tháng 3 – Tháng 9</strong><br>(Chính vụ: T5 – T7)</td>
+            <td>Quả dài 25–35cm, vỏ mỏng xanh bóng, cơm vàng ươm mỡ gà, tỷ lệ thịt >75%, dẻo sáp đậm đà, hậu vị ngọt béo bùi.</td>
+            <td>Dòng sản phẩm đinh: Kem Bơ Tươi Signature, Bơ Dầm Sữa Chua Hy Lạp, Affocado espresso.</td>
+          </tr>
+          <tr>
+            <td><strong>Bơ Booth 7</strong></td>
+            <td>Đắk Mil, Cư M'gar, Đà Lạt</td>
+            <td><strong>Tháng 9 – Tháng 12</strong><br>(Mùa Thu - Đông)</td>
+            <td>Quả tròn đều như trái bóng, vỏ dày cứng màu xanh sẫm, thịt bơ vàng nhạt, độ khô cao, bảo quản tự nhiên 12–15 ngày sau hái.</td>
+            <td>Cung ứng giai đoạn giao mùa; sản xuất bơ cấp đông hạt lựu IQF và làm bánh mì nướng Smashed Avocado Toast.</td>
+          </tr>
+          <tr>
+            <td><strong>Bơ Hass Nhiệt Đới</strong></td>
+            <td>Đà Lạt (độ cao >1.400m)</td>
+            <td><strong>Tháng 11 – Tháng 2</strong><br>(Mùa Đông - Xuân)</td>
+            <td>Vỏ sần sùi ngả tím đen khi chín, hàm lượng dầu đạt kỷ lục 18% – 22%, hương vị hạt dẻ bùi ngậy đặc trưng tiêu chuẩn quốc tế.</td>
+            <td>Dòng cao cấp mùa lễ hội: Dirty Hass Latte, Dầu bơ nguyên chất Extra Virgin rưới xà lách.</td>
+          </tr>
+          <tr>
+            <td><strong>Bơ Tứ Quý & Bơ Reed</strong></td>
+            <td>Lâm Hà, Bảo Lộc</td>
+            <td><strong>Ra hoa rải vụ</strong><br>(Tháng 1, 4, 8, 11)</td>
+            <td>Khả năng cho trái nghịch vụ cao, năng suất ổn định, bù đắp hoàn hảo các khoảng trống thiếu hụt giữa hai mùa chính.</td>
+            <td>Duy trì nền số lượng lớn cho sinh tố, sốt bơ salad và chế biến hạt bơ BioFase.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="photo-banner" style="margin: 25px 0;">
+        <img src="assets/images/img_iqf_factory.jpg" alt="Dây chuyền buồng cấp đông IQF tầng sôi bơ -38°C">
+        <div class="photo-caption">
+          <span>❄️</span> <strong>Hình 2:</strong> Dây chuyền cấp đông tầng sôi IQF liên tục — Các khối bơ hạt lựu đông kết siêu tốc ở -38°C, bảo toàn màng tế bào béo nguyên vẹn mà không bị dăm đá.
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAPTER 3 -->
+    <div class="chapter">
+      <div class="chapter-header">
+        <span class="chapter-num">CHƯƠNG 03</span>
+        <h2 class="chapter-title">Công Nghệ Cấp Đông Tầng Sôi IQF (-38°C) & Cơ Chế Ức Chế Enzyme PPO</h2>
+      </div>
+
+      <p>
+        Bơ là loại quả hô hấp đột biến (Climacteric Fruit) cực kỳ nhạy cảm. Quá trình làm mềm và biến nâu diễn ra chỉ trong 24–48 giờ sau khi đạt độ chín tối ưu. Cấp đông gió thông thường (Air-blast) tạo ra các mũi kim đá lớn xé toạc màng tế bào, khiến bơ rã đông bị chảy nước nhớt (drip loss >12%) và thâm sẫm tức thì.
+      </p>
+
+      <div class="callout-cold">
+        <h4>❄️ ĐỘT PHÁ CỦA CÔNG NGHỆ CẤP ĐÔNG TẦNG SÔI LIÊN TỤC IQF</h4>
+        <p>
+          Trong buồng cấp đông tầng sôi, luồng khí lạnh cực sâu <strong>-38°C</strong> thổi ngược từ đáy băng tải với tốc độ cao giúp các viên bơ hạt lựu lơ lửng bồng bềnh, đông cứng bề mặt chỉ trong <strong>vài chục giây</strong>. Tinh thể băng hình thành ở kích thước siêu vi trong nội bào, giữ nguyên cấu trúc dẻo mịn tự nhiên khi rã đông và kiểm soát tỷ lệ thoát dịch ở mức siêu thấp <strong>&lt; 1.8%</strong>.
+        </p>
+      </div>
+
+      <div class="chapter-header" style="margin-top:35px;">
+        <h3 style="font-size:1.3rem;font-weight:800;color:var(--primary-dark)">Ức Chế Động Học Enzyme Polyphenol Oxidase (PPO) Bằng Dung Dịch Nhúng Đa Rào Cản</h3>
+      </div>
+      
+      <p>
+        Khi thịt bơ tiếp xúc với oxy, enzyme Polyphenol Oxidase (PPO) có tâm xúc tác đồng ($Cu^{2+}$) sẽ lập tức chuyển hóa hợp chất phenolic thành quinone, sau đó trùng hợp thành sắc tố melanin màu đen sạm làm mất giá trị cảm quan. Chạm Đà Lạt áp dụng công thức nhúng tiền cấp đông đa rào cản tự nhiên 100%:
+      </p>
+
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Hoạt chất nhúng</th>
+            <th>Nồng độ chuẩn</th>
+            <th>Cơ chế hóa sinh triệt tiêu biến nâu</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Axit L-Ascorbic (Vitamin C)</strong></td>
+            <td><strong>1.0% – 1.2% (w/v)</strong></td>
+            <td>Chất khử cực mạnh, lập tức khử hồi chuyển <em>o</em>-quinon màu nâu quay lại thành <em>o</em>-diphenol không màu trước khi trùng hợp melanin; đồng thời quét sạch oxy hòa tan trên bề mặt quả.</td>
+          </tr>
+          <tr>
+            <td><strong>Axit Citric</strong></td>
+            <td><strong>0.6% – 0.8% (w/v)</strong></td>
+            <td>Hạ pH bề mặt bơ xuống ngưỡng $3.3 \pm 0.1$ làm tê liệt hoàn toàn hoạt tính enzyme PPO; đồng thời đóng vai trò chất chelate bẫy chặt ion đồng $Cu^{2+}$ tại tâm xúc tác enzyme.</td>
+          </tr>
+          <tr>
+            <td><strong>Canxi Clorua ($CaCl_2$)</strong></td>
+            <td><strong>0.2% – 0.3% (w/v)</strong></td>
+            <td>Cung cấp ion $Ca^{2+}$ liên kết chéo với chuỗi pectin trong vách tế bào bơ, tạo cầu canxi pectate gia cố độ săn chắc cấu trúc miếng bơ, ngăn chặn hiện tượng mềm nhũn sau rã đông.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CHAPTER 4 -->
+    <div class="chapter">
+      <div class="chapter-header">
+        <span class="chapter-num">CHƯƠNG 04</span>
+        <h2 class="chapter-title">Đóng Gói Biến Đổi Khí Quyển (MAP) & Chuỗi Cung Ứng Lạnh Sâu</h2>
+      </div>
+
+      <p>
+        Sau khi cấp đông IQF, bơ được đưa ngay vào máy đóng gói tự động xả khí biến đổi (Modified Atmosphere Packaging - MAP). Bằng cách kiểm soát tỷ lệ 3 loại khí trơ bên trong bao bì màng chắn cao PA/EVOH/PE, sản phẩm bơ IQF Chạm Đà Lạt đạt thời hạn bảo quản <strong>18 tháng ở -18°C</strong> mà không dùng bất kỳ hóa chất bảo quản tổng hợp nào:
+      </p>
+
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Thành phần khí</th>
+            <th>Tỷ lệ tối ưu</th>
+            <th>Chỉ tiêu kỹ thuật & Tác động bảo quản</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Oxy ($O_2$)</strong></td>
+            <td><strong>&lt; 0.2%</strong> (ngưỡng tối đa $\le 0.5\%$)</td>
+            <td>Triệt tiêu hoàn toàn phản ứng peroxy hóa lipid (ngăn ngừa ôi khét dầu bơ) và dập tắt hoàn toàn phản ứng thâm nâu enzyme trong suốt 18 tháng lưu kho.</td>
+          </tr>
+          <tr>
+            <td><strong>Carbon Dioxide ($CO_2$)</strong></td>
+            <td><strong>15% – 20%</strong></td>
+            <td>Kìm hãm vi khuẩn hiếu khí và nấm mốc; hòa tan vào lớp ẩm bề mặt tạo màng axit cacbonic nhẹ bảo vệ sản phẩm trong suốt quá trình xả đông trước khi chế biến.</td>
+          </tr>
+          <tr>
+            <td><strong>Nitơ ($N_2$)</strong></td>
+            <td><strong>80% – 85%</strong></td>
+            <td>Khí trơ làm đầy thể tích bao bì, đóng vai trò đệm khí cơ học chống va đập, ngăn ngừa tình trạng các viên bơ bị dập góc, gãy vụn khi xếp chồng pallet vận chuyển xa.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CHAPTER 5 -->
+    <div class="chapter">
+      <div class="chapter-header">
+        <span class="chapter-num">CHƯƠNG 05</span>
+        <h2 class="chapter-title">Bài Toán Đầu Tư & Tài Chính Dự Án: CapEx 23 Tỷ & OpEx 39.057 đ/kg (Nhà Máy 8 Tấn/Ngày)</h2>
+      </div>
+
+      <p>
+        Mô hình tài chính chi tiết cho nhà máy sơ chế và cấp đông bơ IQF công suất 8 tấn bơ quả tươi/ngày (tương đương 4.840 kg thành phẩm bơ IQF Loại 1/ngày) đặt tại Khu công nghiệp Lộc Sơn, Bảo Lộc, Lâm Đồng:
+      </p>
+
+      <div class="deep-box">
+        <h3>⚖️ Cân Bằng Vật Chất & Tỷ Lệ Thu Hồi Thành Phẩm (Net Yield 60.5%)</h3>
+        <div class="formula-box">[1.000 kg Bơ tươi tuyển chọn tại vườn] 
+  ──> [-25 kg / 2.5%] Phân loại loại bỏ quả dập non, thâm đầu cuống
+  ──> [-165 kg / 16.5%] Tách thu hồi hạt bơ (pit) ➔ Chuyển sang dây chuyền hạt nhựa sinh học BioFase
+  ──> [-130 kg / 13.0%] Bóc tách vỏ bơ (peel) ➔ Chuyển sang nhà máy phân bón hữu cơ vi sinh
+  ──> [-40 kg / 4.0%] Gọt tỉa xơ đen và mấu sượng đầu trái
+  ──> [-20 kg / 2.0%] Mùn vụn máy cắt hạt lựu 3 chiều ➔ Chuyển sang bồn ép dầu bơ EVAO
+  ──> [-10 kg / 1.0%] Hao hụt bay hơi ẩm trong buồng cấp đông IQF
+  ──> [-5 kg / 0.5%] Hao hụt cân định lượng & đóng gói MAP tự động
+===> THÀNH PHẨM XUẤT XƯỞNG: 605 kg Bơ IQF Loại 1 (TỶ LỆ THU HỒI NET YIELD ĐẠT 60.5%)
+===> Công suất 8 tấn bơ quả/ngày: Thu được 4.840 kg Bơ IQF thành phẩm/ngày (345 kg/h).</div>
+      </div>
+
+      <div class="chapter-header" style="margin-top:35px;">
+        <h3 style="font-size:1.25rem;font-weight:800;color:var(--primary-dark)">Bảng Chi Tiết Tổng Mức Đầu Tư Ban Đầu (CapEx: 23.0 Tỷ VNĐ / $920.000 USD)</h3>
+      </div>
+
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Hạng mục Đầu tư & Thiết bị</th>
+            <th>Quy cách & Xuất xứ</th>
+            <th>Vốn Đầu Tư (Tỷ VNĐ)</th>
+            <th>Quy đổi (USD)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Xây dựng Nhà xưởng & Phòng sạch ISO/HACCP</strong></td>
+            <td>1.200 m² sàn, panel PIR chống cháy 100mm, nền epoxy kháng khuẩn âm sàn SUS304</td>
+            <td>5.50</td>
+            <td>$220,000</td>
+          </tr>
+          <tr>
+            <td><strong>Cụm Kho ủ chín kiểm soát Ethylene</strong></td>
+            <td>02 phòng x 25 tấn bơ, cảm biến vi khí hậu $15-18^\circ C$, độ ẩm 95%</td>
+            <td>1.20</td>
+            <td>$48,000</td>
+          </tr>
+          <tr>
+            <td><strong>Buồng Cấp đông Tầng sôi IQF 500 kg/h</strong></td>
+            <td>Hệ thống cấp đông tầng sôi liên tục -38°C, cụm nén Bitzer 2 cấp 220kW</td>
+            <td>6.80</td>
+            <td>$272,000</td>
+          </tr>
+          <tr>
+            <td><strong>Dây chuyền cân & Đóng gói tự động MAP</strong></td>
+            <td>Cân định lượng 14 đầu điện tử, máy đóng túi xả khí $N_2/CO_2$, máy dò kim loại Anritsu</td>
+            <td>1.90</td>
+            <td>$76,000</td>
+          </tr>
+          <tr>
+            <td><strong>Kho lạnh sâu bảo quản thành phẩm (-22°C)</strong></td>
+            <td>Sức chứa 150 tấn thành phẩm, panel PU 150mm, kệ Drive-in racking tiêu chuẩn</td>
+            <td>2.10</td>
+            <td>$84,000</td>
+          </tr>
+          <tr>
+            <td><strong>Hạng mục phụ trợ, máy cắt hạt Urschel, xử lý nước</strong></td>
+            <td>Máy cắt 3 chiều Urschel, trạm biến áp 400 kVA, hệ thống xử lý nước thải 25 m³/ngày</td>
+            <td>5.50</td>
+            <td>$220,000</td>
+          </tr>
+          <tr style="background:#f0fdf4; font-weight:800;">
+            <td colspan="2"><strong>TỔNG VỐN ĐẦU TƯ CAPEX TOÀN BỘ NHÀ MÁY</strong></td>
+            <td style="color:var(--primary); font-size:1.15rem;"><strong>23.00 TỶ VNĐ</strong></td>
+            <td style="color:var(--primary); font-size:1.15rem;"><strong>$920,000 USD</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="grid-2col">
+        <div class="card-stat">
+          <h4 style="color:var(--primary);">📦 Bóc Tách Chi Phí Sản Xuất (OpEx: 39.057 đ/kg)</h4>
+          <p>• Chi phí mua bơ tươi nguyên liệu (tính trên yield 60.5%): <strong>26.446 đ/kg</strong> (Bơ vườn 16.000 đ/kg).</p>
+          <p style="margin-top:8px;">• Bao bì màng ghép MAP + Thùng carton 5 lớp: <strong>2.850 đ/kg</strong>.</p>
+          <p style="margin-top:8px;">• Điện năng vận hành buồng lạnh & nhà xưởng: <strong>3.200 đ/kg</strong>.</p>
+          <p style="margin-top:8px;">• Nhân công sơ chế, gọt vỏ, vận hành: <strong>3.800 đ/kg</strong>.</p>
+          <p style="margin-top:8px;">• Hóa chất nhúng PPO, nước, bảo trì & quản lý: <strong>2.761 đ/kg</strong>.</p>
+        </div>
+
+        <div class="card-stat">
+          <h4 style="color:var(--gold);">💰 Chỉ Số Hiệu Quả Tài Chính Dự Án (ROI & Payback)</h4>
+          <p>• Giá bán sỉ bơ IQF cho chuỗi F&B / xuất khẩu: <strong>65.000 VNĐ/kg</strong>.</p>
+          <p style="margin-top:8px;">• Lợi nhuận gộp trên 1 kg thành phẩm: <strong>25.943 VNĐ/kg (39.91%)</strong>.</p>
+          <p style="margin-top:8px;">• Dòng tiền EBITDA vận hành năm (250 ngày chạy): <strong>31.391.000.000 VNĐ/năm</strong>.</p>
+          <p style="margin-top:8px;">• Thời gian hoàn vốn đầu tư giản đơn (Payback Period): <strong>9 – 11 tháng</strong> khi đạt 80% công suất.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p style="font-weight: 800; color: #284d2c; font-size: 1.05rem; font-family: 'Blinker', sans-serif;">Tập 1: Kinh Tế Vĩ Mô & Chuỗi Cung Ứng Lạnh Bơ Toàn Cầu</p>
+    <p>Báo cáo độc lập chuyên sâu • Chuẩn hóa lưu trữ Google Drive & Trình chiếu hội đồng thẩm định</p>
+    <p style="margin-top: 10px; font-size: 0.82rem; color: #6b7a63;">Thương hiệu: Chạm Đà Lạt (chamdalat.vn) • Chuyến tàu chở hơi thở phố núi</p>
+  </footer>
+
+</body>
+</html>

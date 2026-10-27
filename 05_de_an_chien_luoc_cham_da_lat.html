@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<title>Tập 5: Đề Án Chiến Lược Thương Hiệu & Ma Trận Menu R&D Đột Phá Chạm Đà Lạt | Chạm Đà Lạt</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Andika:ital,wght@0,400;0,700;1,400&family=Blinker:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cham-green: #53783e;
+    --cham-dark: #284d2c;
+    --cham-deep: #1b361e;
+    --cham-light: #b6c79e;
+    --cham-soft: #eef4e6;
+    --cham-cream: #faf9f5;
+    --cham-card: #ffffff;
+    --cham-gold: #d9822b;
+    --cham-gold-soft: #fef7ec;
+    --cham-red: #c2410c;
+    --cham-red-soft: #fff1ed;
+    --border-color: #dce7d1;
+    --text-heading: #284d2c;
+    --text-body: #3c4a35;
+    --text-muted: #6b7a63;
+    --radius-xl: 18px;
+    --radius-lg: 12px;
+    --radius-md: 8px;
+    --radius-full: 9999px;
+    --shadow-cham: 0 10px 25px -5px rgba(83, 120, 62, 0.08), 0 4px 10px -2px rgba(0, 0, 0, 0.03);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Andika', sans-serif;
+    background-color: var(--cham-cream);
+    color: var(--text-body);
+    line-height: 1.75;
+    background-image: 
+      radial-gradient(circle at 10% 10%, rgba(83, 120, 62, 0.05) 0%, transparent 45%),
+      radial-gradient(circle at 90% 40%, rgba(217, 130, 43, 0.04) 0%, transparent 40%),
+      radial-gradient(circle at 50% 90%, rgba(182, 199, 158, 0.08) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+  
+  h1, h2, h3, h4, .brand-name, .kpi-value, .chapter-title, .page-title {
+    font-family: 'Blinker', sans-serif;
+    letter-spacing: -0.2px;
+  }
+  
+  /* STANDALONE HEADER MATCHING CHẠM ĐÀ LẠT */
+  .standalone-header {
+    background: #ffffff;
+    border-bottom: 2px solid var(--border-color);
+    padding: 14px 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(83, 120, 62, 0.05);
+  }
+  .brand-group { display: flex; align-items: center; gap: 14px; }
+  .brand-logo-img {
+    height: 48px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+  }
+  .brand-icon {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, #53783e, #284d2c);
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    box-shadow: 0 4px 12px rgba(83, 120, 62, 0.25);
+  }
+  .brand-name { font-size: 1.25rem; font-weight: 800; color: var(--cham-dark); letter-spacing: 0.5px; }
+  .brand-sub { font-size: 0.72rem; color: var(--cham-green); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .vol-badge-pill {
+    background: var(--cham-soft);
+    border: 1px solid var(--cham-light);
+    color: var(--cham-dark);
+    font-size: 0.82rem;
+    font-weight: 800;
+    padding: 6px 18px;
+    border-radius: var(--radius-full);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Blinker', sans-serif;
+  }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 45px 24px 90px; }
+  
+  .breadcrumb { font-size: 0.85rem; font-weight: 800; color: var(--cham-gold); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; font-family: 'Blinker', sans-serif; }
+  .page-title { font-size: clamp(2.2rem, 4.2vw, 3.4rem); font-weight: 900; line-height: 1.2; margin-bottom: 18px; color: var(--cham-dark); }
+  .page-title span { color: var(--cham-green); }
+  .page-lead { font-size: 1.15rem; color: var(--text-muted); max-width: 980px; margin-bottom: 30px; line-height: 1.8; }
+
+  /* PHOTO EMBED BANNER */
+  .photo-banner {
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    margin: 25px 0 45px;
+    box-shadow: var(--shadow-cham);
+    border: 1px solid var(--border-color);
+    background: #fff;
+  }
+  .photo-banner img {
+    width: 100%;
+    height: auto;
+    max-height: 520px;
+    object-fit: cover;
+    display: block;
+  }
+  .photo-caption {
+    padding: 14px 22px;
+    background: #fff;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+  }
+
+  /* KPI ROW */
+  .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; margin-bottom: 50px; }
+  .kpi-box {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 24px 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-cham);
+  }
+  .kpi-box::before {
+    content:'';
+    position: absolute;
+    top:0; left:0; right:0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--cham-green), var(--cham-light));
+  }
+  .kpi-value { font-size: 2.3rem; font-weight: 900; color: var(--cham-green); margin-bottom: 4px; }
+  .kpi-label { font-size: 0.9rem; color: var(--text-muted); font-weight: 600; line-height: 1.5; }
+
+  /* CHAPTER */
+  .chapter { margin-bottom: 60px; }
+  .chapter-header { margin-bottom: 24px; border-bottom: 2px solid var(--border-color); padding-bottom: 14px; }
+  .chapter-num { font-size: 0.85rem; font-weight: 800; color: var(--cham-green); text-transform: uppercase; letter-spacing: 2px; font-family: 'Blinker', sans-serif; }
+  .chapter-title { font-size: 1.9rem; font-weight: 800; color: var(--cham-dark); margin-top: 4px; }
+
+  /* CUSTOM TABLES */
+  .custom-table { width: 100%; border-collapse: collapse; margin: 20px 0 35px; background: #ffffff; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border-color); box-shadow: var(--shadow-cham); }
+  .custom-table th { background: var(--cham-soft); color: var(--cham-dark); text-align: left; padding: 16px 20px; font-size: 0.92rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--cham-light); font-family: 'Blinker', sans-serif; }
+  .custom-table td { padding: 16px 20px; border-bottom: 1px solid #edf3e7; font-size: 0.95rem; vertical-align: top; color: var(--text-body); }
+  .custom-table tr:hover td { background: #f9fbf6; }
+  .custom-table code { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; background: var(--cham-soft); color: var(--cham-dark); padding: 3px 6px; border-radius: 4px; display: inline-block; margin-bottom: 3px; }
+
+  /* BOXES */
+  .deep-box { background: var(--cham-soft); border: 1px solid var(--cham-light); border-radius: var(--radius-lg); padding: 28px; margin: 24px 0; box-shadow: var(--shadow-cham); }
+  .deep-box h3 { font-size: 1.3rem; font-weight: 800; margin-bottom: 12px; color: var(--cham-dark); display: flex; align-items: center; gap: 8px; }
+  
+  .callout-cold { background: var(--cham-soft); border-left: 4px solid var(--cham-green); padding: 22px; border-radius: 0 var(--radius-md) var(--radius-md) 0; margin: 20px 0; }
+  .callout-cold h4 { color: var(--cham-dark); font-weight: 800; margin-bottom: 8px; font-size: 1.15rem; font-family: 'Blinker', sans-serif; }
+
+  .callout-gold { background: var(--cham-gold-soft); border-left: 4px solid var(--cham-gold); padding: 22px; border-radius: 0 var(--radius-md) var(--radius-md) 0; margin: 20px 0; }
+  .callout-gold h4 { color: #b45309; font-weight: 800; margin-bottom: 8px; font-size: 1.15rem; font-family: 'Blinker', sans-serif; }
+
+  .callout-red { background: var(--cham-red-soft); border-left: 4px solid var(--cham-red); padding: 22px; border-radius: 0 var(--radius-md) var(--radius-md) 0; margin: 20px 0; }
+  .callout-red h4 { color: #9a3412; font-weight: 800; margin-bottom: 8px; font-size: 1.15rem; font-family: 'Blinker', sans-serif; }
+
+  .formula-box { background: var(--cham-deep); border-radius: var(--radius-md); padding: 20px 24px; margin: 18px 0; font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; color: #d9f2c7; line-height: 1.7; overflow-x: auto; white-space: pre-wrap; }
+
+  .grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 24px 0; }
+  @media(max-width:850px){ .grid-2col { grid-template-columns: 1fr; } }
+  .card-stat { background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 26px; box-shadow: var(--shadow-cham); }
+  .card-stat h4 { font-size: 1.2rem; font-weight: 800; margin-bottom: 10px; color: var(--cham-dark); font-family: 'Blinker', sans-serif; }
+
+  .script-card { background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 24px; margin: 20px 0; box-shadow: var(--shadow-cham); }
+  .script-card h4 { font-size: 1.25rem; font-weight: 800; color: var(--cham-dark); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; font-family: 'Blinker', sans-serif; }
+  .script-tag { background: var(--cham-soft); color: var(--cham-green); font-size: 0.78rem; font-weight: 800; padding: 4px 12px; border-radius: 9999px; border: 1px solid var(--cham-light); }
+
+  .quote-box { background: #fdfefc; border-left: 4px solid var(--cham-light); padding: 14px 18px; margin: 12px 0; font-style: italic; color: #43513d; font-size: 0.95rem; border-radius: 0 8px 8px 0; }
+  .quote-pos { border-left-color: var(--cham-green); background: #f4f8ef; }
+  .quote-neg { border-left-color: var(--cham-red); background: #fff5f2; }
+
+  /* 5-LAYER FRAMEWORK DIAGRAM */
+  .framework-flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin: 40px 0 60px; }
+  @media(max-width:992px){ .framework-flow { grid-template-columns: 1fr; } }
+  .layer-card {
+    background: var(--cham-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 24px 18px;
+    box-shadow: var(--shadow-cham);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+  .layer-card::before {
+    content:'';
+    position: absolute;
+    top:0; left:0; right:0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--cham-green), var(--cham-light));
+  }
+  .layer-card:hover { transform: translateY(-4px); box-shadow: 0 16px 30px rgba(83, 120, 62, 0.15); border-color: var(--cham-green); }
+  .layer-num { font-size: 0.78rem; font-weight: 800; color: var(--cham-gold); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; font-family: 'Blinker', sans-serif; }
+  .layer-name { font-size: 1.25rem; font-weight: 800; color: var(--cham-dark); margin-bottom: 10px; font-family: 'Blinker', sans-serif; }
+  .layer-desc { font-size: 0.88rem; color: var(--text-body); line-height: 1.55; margin-bottom: 16px; }
+  .layer-tag { background: var(--cham-soft); color: var(--cham-dark); border: 1px solid var(--cham-light); padding: 5px 12px; border-radius: var(--radius-full); font-size: 0.78rem; font-weight: 700; text-align: center; }
+
+  .sentiment-bar-wrapper { margin: 24px 0 36px; background: #fff; padding: 24px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-cham); }
+  .sentiment-bar { height: 32px; width: 100%; background: #e6edd9; border-radius: var(--radius-full); display: flex; overflow: hidden; margin-bottom: 14px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.06); }
+  .bar-pos { background: linear-gradient(90deg, #53783e, #78953e); height: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.82rem; font-weight: 800; color: #fff; font-family: 'Blinker', sans-serif; }
+  .bar-neu { background: #9dae8d; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.82rem; font-weight: 800; color: #fff; font-family: 'Blinker', sans-serif; }
+  .bar-neg { background: linear-gradient(90deg, #dc2626, #c2410c); height: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.82rem; font-weight: 800; color: #fff; font-family: 'Blinker', sans-serif; }
+
+  footer { text-align: center; padding: 50px 20px; border-top: 1px solid var(--border-color); margin-top: 80px; font-size: 0.9rem; color: var(--text-muted); background: #ffffff; }
+  footer p { margin-bottom: 4px; }
+</style>
+
+</head>
+<body>
+
+  <header class="standalone-header">
+    <div class="brand-group">
+      <img src="https://chamdalat.vn/wp-content/uploads/2023/11/logo-cham-300x129.png" alt="CHẠM ĐÀ LẠT" class="brand-logo-img" onerror="this.style.display='none'; document.getElementById('logo-fallback-05').style.display='flex';">
+      <div id="logo-fallback-05" style="display:none; align-items:center; gap:12px;">
+        <div class="brand-icon">🥑</div>
+        <div>
+          <div class="brand-name">CHẠM ĐÀ LẠT</div>
+          <div class="brand-sub">Kem Bơ Tươi Đà Lạt từ 100% bơ nguyên chất</div>
+        </div>
+      </div>
+    </div>
+    <div class="vol-badge-pill">TẬP 05 • BÁO CÁO ĐỘC LẬP</div>
+  </header>
+
+  <div class="container">
+<div class="breadcrumb">ĐỀ ÁN CHIẾN LƯỢC TOÀN DIỆN & TÀI CHÍNH F&B • TẬP 05 / 06</div>
+    <h1 class="page-title">Đề Án Chiến Lược Thương Hiệu & <span>Ma Trận Menu R&D Đột Phá Chạm Đà Lạt</span></h1>
+    <p class="page-lead">
+      Bản kế hoạch hành động tối thượng cho thương hiệu Chạm Đà Lạt: Tuyên ngôn định vị "Kem Bơ Tươi Bản Địa Lâm Đồng", bóc tách công thức định lượng gram chi tiết cho 6 dòng menu R&D đạt biên lợi nhuận gộp 74.2%, mô hình P&L tài chính cho 3 định dạng cửa hàng và lộ trình mở rộng chuỗi 50 điểm nhượng quyền toàn quốc.
+    </p>
+
+    <div class="photo-banner">
+      <img src="assets/images/img_menu_lineup.jpg" alt="Bộ Sưu Tập Signature Menu Chạm Đà Lạt: Kem Bơ Dừa Non, Affocado, Sữa Chua Bơ Hy Lạp & Smashed Toast">
+      <div class="photo-caption">
+        <span>🥑</span> <strong>Hình 1:</strong> Bộ sưu tập Signature Menu Chạm Đà Lạt — Kem bơ dừa non tuyết sơn, Cà phê Affocado, Bơ dầm sữa chua Hy Lạp hạt chia và Bánh mì bơ tươi Smashed Toast chuẩn phong cách chamdalat.vn.
+      </div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi-box">
+        <div class="kpi-value">6 Dòng Menu</div>
+        <div class="kpi-label">Công thức R&D độc bản cân bằng hoàn hảo giữa Vị Giác & Sức Khỏe</div>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-value">74.2% Margin</div>
+        <div class="kpi-label">Biên lợi nhuận gộp trung bình toàn menu (COGS chỉ chiếm 25.8%)</div>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-value">3 Định Dạng</div>
+        <div class="kpi-label">Mô hình kinh doanh linh hoạt: Kiosk Takeaway, Standard Store & Flagship</div>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-value">50 Cửa Hàng</div>
+        <div class="kpi-label">Mục tiêu phát triển chuỗi nhượng quyền phủ sóng toàn quốc trong 24 tháng</div>
+      </div>
+    </div>
+
+    <!-- CHAPTER 1 -->
+    <div class="chapter">
+      <div class="chapter-header">
+        <span class="chapter-num">CHƯƠNG 01</span>
+        <h2 class="chapter-title">Tuyên Ngôn Định Vị & 3 Chân Dung Khách Hàng Mục Tiêu (Customer Personas)</h2>
+      </div>
+
+      <div class="callout-gold">
+        <h4>🎯 TUYÊN NGÔN ĐỊNH VỊ THƯƠNG HIỆU (BRAND POSITIONING STATEMENT)</h4>
+        <p>
+          <em>"Dành cho những người tiêu dùng hiện đại yêu chuộng lối sống lành mạnh và trải nghiệm ẩm thực tinh tế, <strong>Chạm Đà Lạt</strong> là chuỗi cửa hàng tráng miệng và đồ uống chuyên biệt từ bơ tiên phong tại Việt Nam, mang đến những ly kem bơ sáp 034 dẻo quánh nguyên chất kết hợp sáng tạo cùng cà phê Cầu Đất và sữa chua Hy Lạp, với cam kết 100% bơ già chín tự nhiên minh bạch từ nông trại cao nguyên Lâm Đồng."</em>
+        </p>
+      </div>
+
+      <div class="grid-2col" style="margin-top:30px;">
+        <div class="card-stat">
+          <h4 style="color:var(--primary);">👩‍💼 Persona 1: "The Aesthetic Gen Z & Trend Chaser" (Chiếm 45%)</h4>
+          <p>• <strong>Độ tuổi:</strong> 18 – 26 tuổi (Sinh viên, Gen Z mới đi làm).</p>
+          <p style="margin-top:8px;">• <strong>Hành vi:</strong> Nghiện TikTok, Instagram; thường xuyên đi cafe chụp ảnh sống ảo cuối tuần; cực kỳ nhạy cảm với visual món ăn và bao bì đóng gói đẹp mắt.</p>
+          <p style="margin-top:8px;">• <strong>Sản phẩm yêu thích:</strong> Affocado Chạm, Bơ Dừa Non Tuyết Sơn, Trà Ô Long Bơ Phân Tầng Macchiato.</p>
+          <p style="margin-top:8px;">• <strong>Mức chi trả:</strong> 55.000 – 75.000 đ/lần ghé thăm.</p>
+        </div>
+
+        <div class="card-stat">
+          <h4 style="color:var(--gold);">🧘‍♀️ Persona 2: "The Health & Clean-Eating Pro" (Chiếm 35%)</h4>
+          <p>• <strong>Độ tuổi:</strong> 25 – 38 tuổi (Dân văn phòng, người tập Yoga/Gym).</p>
+          <p style="margin-top:8px;">• <strong>Hành vi:</strong> Ám ảnh calo và đường tinh luyện; tìm kiếm bữa sáng hoặc bữa xế lành mạnh giàu chất béo tốt (MUFA), chất xơ và protein; sẵn sàng trả giá cao cho đồ hữu cơ.</p>
+          <p style="margin-top:8px;">• <strong>Sản phẩm yêu thích:</strong> Sữa Chua Bơ Hy Lạp Hạt Chia, Smashed Avocado Toast, Sinh Tố Bơ Cải Xoăn Không Đường.</p>
+          <p style="margin-top:8px;">• <strong>Mức chi trả:</strong> 65.000 – 110.000 đ/lần ghé thăm.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAPTER 2 -->
+    <div class="chapter">
+      <div class="chapter-header">
+        <span class="chapter-num">CHƯƠNG 02</span>
+        <h2 class="chapter-title">Ma Trận 6 Dòng Menu R&D Đột Phá & Bảng BOM Định Lượng Gram Chi Tiết</h2>
+      </div>
+
+      <p>
+        Bảng công thức định lượng gram (Bill of Materials - BOM) chuẩn hóa tuyệt đối cho từng món giúp chuỗi nhượng quyền kiểm soát chất lượng đồng nhất và triệt tiêu thất thoát:
+      </p>
+
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Tên Món & Nhóm Sản Phẩm</th>
+            <th>BOM Định Lượng Thành Phần Chính (Gram)</th>
+            <th>Giá Vốn (COGS)</th>
+            <th>Giá Bán (VND)</th>
+            <th>Biên Lợi Nhuận Gộp (%)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. Affocado Chạm (Signature)</strong><br><em>Sự kết hợp đỉnh cao Nóng - Lạnh</em></td>
+            <td>120g Cốt kem bơ sáp 034 IQF + 30ml Double Espresso Arabica Cầu Đất + 10g Vụn dừa nướng giòn Bến Tre.</td>
+            <td><strong>14.200 đ</strong></td>
+            <td><strong>59.000 đ</strong></td>
+            <td><strong style="color:var(--primary);">75.93%</strong></td>
+          </tr>
+          <tr>
+            <td><strong>2. Bơ Dừa Non Tuyết Sơn</strong><br><em>Giải nhiệt mùa hè & Dẻo ngậy</em></td>
+            <td>140g Cốt bơ sáp dầm + 60ml Sữa dừa tươi nguyên chất + 40g Thạch sợi dừa non sần sật + 10g Hạt macca sấy vụn.</td>
+            <td><strong>15.600 đ</strong></td>
+            <td><strong>65.000 đ</strong></td>
+            <td><strong style="color:var(--primary);">76.00%</strong></td>
+          </tr>
+          <tr>
+            <td><strong>3. Sữa Chua Bơ Hy Lạp Healthy Glow</strong><br><em>Bữa ăn dinh dưỡng kiểm soát Calo</em></td>
+            <td>100g Cốt bơ sáp tươi + 100g Greek Yogurt men sống + 15g Hạt chia organic + 15ml Mật ong hoa cà phê rừng.</td>
+            <td><strong>18.500 đ</strong></td>
+            <td><strong>69.000 đ</strong></td>
+            <td><strong style="color:var(--primary);">73.19%</strong></td>
+          </tr>
+          <tr>
+            <td><strong>4. Bơ Matcha Cacao Nibs</strong><br><em>Chất chống oxy hóa & Năng lượng sạch</em></td>
+            <td>120g Kem bơ tươi + 3g Bột Matcha Bảo Lộc cao cấp + 40ml Sữa tươi thanh trùng + 15g Hạt cacao rang giòn Lâm Hà.</td>
+            <td><strong>16.800 đ</strong></td>
+            <td><strong>62.000 đ</strong></td>
+            <td><strong style="color:var(--primary);">72.90%</strong></td>
+          </tr>
+          <tr>
+            <td><strong>5. Smashed Avocado Toast</strong><br><em>Bữa sáng cao cấp chuẩn Âu</em></td>
+            <td>01 Lát bánh mì men chua Sourdough nướng giòn + 80g Bơ 034 thái lát quạt + 01 Trứng chần lòng đào + Tiêu đen Phú Quốc.</td>
+            <td><strong>19.800 đ</strong></td>
+            <td><strong>75.000 đ</strong></td>
+            <td><strong style="color:var(--primary);">73.60%</strong></td>
+          </tr>
+          <tr>
+            <td><strong>6. Trà Lạc Tiên Lá Bơ Oolong</strong><br><em>Thanh lọc cơ thể, an thần ngủ ngon</em></td>
+            <td>5g Trà lá bơ sấy lạnh + 3g Lạc tiên thảo mộc + 200ml Nước sôi 90°C + 15ml Mật ong nhãn + Lát chanh vàng sấy.</td>
+            <td><strong>8.500 đ</strong></td>
+            <td><strong>45.000 đ</strong></td>
+            <td><strong style="color:var(--primary);">81.11%</strong></td>
+          </tr>
+          <tr style="background:#f0fdf4; font-weight:800;">
+            <td colspan="2"><strong>TRUNG BÌNH TOÀN DANH MỤC MENU R&D</strong></td>
+            <td><strong>15.566 đ (25.8%)</strong></td>
+            <td><strong>62.500 đ</strong></td>
+            <td style="color:var(--primary); font-size:1.15rem;"><strong>74.20%</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CHAPTER 3 -->
+    <div class="chapter">
+      <div class="chapter-header">
+        <span class="chapter-num">CHƯƠNG 03</span>
+        <h2 class="chapter-title">Mô Hình Tài Chính P&L Cho 3 Định Dạng Cửa Hàng Nhượng Quyền</h2>
+      </div>
+
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Chỉ Tiêu Tài Chính</th>
+            <th>Mô Hình Kiosk Takeaway (20-30m²)</th>
+            <th>Mô Hình Standard Store (60-80m²)</th>
+            <th>Mô Hình Flagship Store (180-250m²)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Vị trí mặt bằng</strong></td>
+            <td>Tầng trệt tòa nhà văn phòng, TTTM, góc phố đông</td>
+            <td>Mặt tiền đường lớn quận trung tâm, khu dân cư cao cấp</td>
+            <td>Khu phố du lịch đắc địa (Đà Lạt, Thảo Điền Q2, Hoàn Kiếm)</td>
+          </tr>
+          <tr>
+            <td><strong>Tổng Vốn Đầu Tư (CapEx)</strong></td>
+            <td><strong>750 Triệu VNĐ</strong></td>
+            <td><strong>1.45 Tỷ VNĐ</strong></td>
+            <td><strong>2.80 Tỷ VNĐ</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Doanh số bán hàng / ngày</strong></td>
+            <td>100 – 120 ly/ngày</td>
+            <td>180 – 220 ly + bánh/ngày</td>
+            <td>350 – 450 ly + món mặn/ngày</td>
+          </tr>
+          <tr>
+            <td><strong>Doanh thu trung bình / tháng</strong></td>
+            <td><strong>185 Triệu VNĐ</strong></td>
+            <td><strong>360 Triệu VNĐ</strong></td>
+            <td><strong>720 Triệu VNĐ</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Giá vốn hàng bán (COGS 25.8%)</strong></td>
+            <td>47.7 Triệu VNĐ</td>
+            <td>92.8 Triệu VNĐ</td>
+            <td>185.7 Triệu VNĐ</td>
+          </tr>
+          <tr>
+            <td><strong>Chi phí mặt bằng thuê / tháng</strong></td>
+            <td>25 Triệu VNĐ</td>
+            <td>50 Triệu VNĐ</td>
+            <td>110 Triệu VNĐ</td>
+          </tr>
+          <tr>
+            <td><strong>Nhân công & Vận hành / tháng</strong></td>
+            <td>38 Triệu VNĐ</td>
+            <td>68 Triệu VNĐ</td>
+            <td>135 Triệu VNĐ</td>
+          </tr>
+          <tr>
+            <td><strong>Điện, nước, marketing, phí nhượng quyền</strong></td>
+            <td>22 Triệu VNĐ</td>
+            <td>34 Triệu VNĐ</td>
+            <td>49 Triệu VNĐ</td>
+          </tr>
+          <tr style="background:#f0fdf4; font-weight:800;">
+            <td><strong>LỢI NHUẬN RÒNG EBITDA / THÁNG</strong></td>
+            <td style="color:var(--primary); font-size:1.1rem;"><strong>52.3 Triệu (28.2%)</strong></td>
+            <td style="color:var(--primary); font-size:1.1rem;"><strong>115.2 Triệu (32.0%)</strong></td>
+            <td style="color:var(--primary); font-size:1.1rem;"><strong>240.3 Triệu (33.3%)</strong></td>
+          </tr>
+          <tr style="font-weight:800;">
+            <td><strong>THỜI GIAN HOÀN VỐN (PAYBACK PERIOD)</strong></td>
+            <td style="color:var(--gold); font-size:1.1rem;"><strong>10 – 12 Tháng</strong></td>
+            <td style="color:var(--gold); font-size:1.1rem;"><strong>12 – 14 Tháng</strong></td>
+            <td style="color:var(--gold); font-size:1.1rem;"><strong>14 – 16 Tháng</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CHAPTER 4 -->
+    <div class="chapter">
+      <div class="chapter-header">
+        <span class="chapter-num">CHƯƠNG 04</span>
+        <h2 class="chapter-title">Quy Trình Vận Hành Tiêu Chuẩn SOP & Cam Kết Chất Lượng Bơ Tươi</h2>
+      </div>
+
+      <div class="deep-box">
+        <h3>🛡️ CAM KẾT VÀNG: "100% BƠ SÁP GIÀ — ĐỀN NGAY LY MỚI NẾU BƠ SƯỢNG"</h3>
+        <p>• <strong>Kiểm tra độ chín 3 bước bằng tay (Tactile Softness Test):</strong> Mỗi sáng lúc 6h30, Trưởng ca quầy bar kiểm tra từng quả bơ theo bảng thang đo độ mềm 4 cấp độ. Chỉ những quả đạt độ mềm cấp 3 (nhún nhẹ 2mm dưới ngón tay cái) mới được đưa vào chế biến trong ngày.</p>
+        <p style="margin-top:8px;">• <strong>Quy chuẩn bảo quản xả đông IQF:</strong> Cốt kem bơ IQF được xả đông chậm trong ngăn mát tủ lạnh $2^\circ C - 4^\circ C$ trong 6 tiếng trước giờ mở cửa. Tuyệt đối không dùng lò vi sóng hoặc ngâm nước nóng làm phân tách nhũ tương chất béo.</p>
+        <p style="margin-top:8px;">• <strong>Chính sách đổi trả vô điều kiện:</strong> Nếu khách hàng cảm nhận vị đắng chát do bất kỳ lý do gì, nhân viên cúi đầu xin lỗi và lập tức pha chế ly mới tặng kèm voucher trải nghiệm miễn phí lần sau.</p>
+      </div>
+    </div>
+
+    <!-- CHAPTER 5 -->
+    <div class="chapter">
+      <div class="chapter-header">
+        <span class="chapter-num">CHƯƠNG 05</span>
+        <h2 class="chapter-title">Lộ Trình Mở Rộng 50 Cửa Hàng Nhượng Quyền Toàn Quốc (2026 - 2028)</h2>
+      </div>
+
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Giai đoạn chiến lược</th>
+            <th>Quy mô mục tiêu</th>
+            <th>Địa bàn trọng điểm</th>
+            <th>Cột mốc then chốt</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Giai đoạn 1: Thử nghiệm & Thẩm thấu (Quý 1-2/2026)</strong></td>
+            <td>05 Cửa hàng Flagship & Chuẩn</td>
+            <td>Đà Lạt (02 điểm), TP. Hồ Chí Minh (Quận 1, Thảo Điền, Phú Nhuận)</td>
+            <td>Hoàn thiện quy chuẩn nhượng quyền (Franchise Manual); chuẩn hóa chuỗi lạnh giao hàng từ Bảo Lộc.</td>
+          </tr>
+          <tr>
+            <td><strong>Giai đoạn 2: Tăng tốc Mở rộng (Quý 3/2026 - Quý 2/2027)</strong></td>
+            <td>20 Cửa hàng Nhượng quyền</td>
+            <td>TP.HCM (mở rộng Q3, Q7, Tân Bình), Bình Dương, Đồng Nai, Vũng Tàu, Đà Nẵng</td>
+            <td>Ký hợp đồng đối tác giao hàng độc quyền với GrabFood & ShopeeFood; ra mắt App Chạm Loyalty.</td>
+          </tr>
+          <tr>
+            <td><strong>Giai đoạn 3: Thống lĩnh Thị trường (Quý 3/2027 - Quý 4/2028)</strong></td>
+            <td>50 Cửa hàng Toàn quốc</td>
+            <td>Hà Nội (15 điểm Hoàn Kiếm, Cầu Giấy, Tây Hồ), Hải Phòng, Cần Thơ, Nha Trang</td>
+            <td>Đạt doanh thu chuỗi 350 tỷ VNĐ/năm; chuẩn bị hồ sơ gọi vốn Series A mở rộng xuất khẩu mô hình sang Bangkok.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    <p style="font-weight: 800; color: #284d2c; font-size: 1.05rem; font-family: 'Blinker', sans-serif;">Tập 5: Đề Án Chiến Lược Thương Hiệu & Ma Trận Menu R&D</p>
+    <p>Báo cáo độc lập chuyên sâu • Chuẩn hóa lưu trữ Google Drive & Trình chiếu hội đồng thẩm định</p>
+    <p style="margin-top: 10px; font-size: 0.82rem; color: #6b7a63;">Thương hiệu: Chạm Đà Lạt (chamdalat.vn) • Chuyến tàu chở hơi thở phố núi</p>
+  </footer>
+
+</body>
+</html>

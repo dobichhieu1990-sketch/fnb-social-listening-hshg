@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<title>Tập 4: Cẩm Nang Kỹ Thuật Social Media Viral Marketing Ngành Bơ | Chạm Đà Lạt</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Andika:ital,wght@0,400;0,700;1,400&family=Blinker:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cham-green: #53783e;
+    --cham-dark: #284d2c;
+    --cham-deep: #1b361e;
+    --cham-light: #b6c79e;
+    --cham-soft: #eef4e6;
+    --cham-cream: #faf9f5;
+    --cham-card: #ffffff;
+    --cham-gold: #d9822b;
+    --cham-gold-soft: #fef7ec;
+    --cham-red: #c2410c;
+    --cham-red-soft: #fff1ed;
+    --border-color: #dce7d1;
+    --text-heading: #284d2c;
+    --text-body: #3c4a35;
+    --text-muted: #6b7a63;
+    --radius-xl: 18px;
+    --radius-lg: 12px;
+    --radius-md: 8px;
+    --radius-full: 9999px;
+    --shadow-cham: 0 10px 25px -5px rgba(83, 120, 62, 0.08), 0 4px 10px -2px rgba(0, 0, 0, 0.03);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Andika', sans-serif;
+    background-color: var(--cham-cream);
+    color: var(--text-body);
+    line-height: 1.75;
+    background-image: 
+      radial-gradient(circle at 10% 10%, rgba(83, 120, 62, 0.05) 0%, transparent 45%),
+      radial-gradient(circle at 90% 40%, rgba(217, 130, 43, 0.04) 0%, transparent 40%),
+      radial-gradient(circle at 50% 90%, rgba(182, 199, 158, 0.08) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+  
+  h1, h2, h3, h4, .brand-name, .kpi-value, .chapter-title, .page-title {
+    font-family: 'Blinker', sans-serif;
+    letter-spacing: -0.2px;
+  }
+  
+  /* STANDALONE HEADER MATCHING CHẠM ĐÀ LẠT */
+  .standalone-header {
+    background: #ffffff;
+    border-bottom: 2px solid var(--border-color);
+    padding: 14px 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(83, 120, 62, 0.05);
+  }
+  .brand-group { display: flex; align-items: center; gap: 14px; }
+  .brand-logo-img {
+    height: 48px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+  }
+  .brand-icon {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, #53783e, #284d2c);
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    box-shadow: 0 4px 12px rgba(83, 120, 62, 0.25);
+  }
+  .brand-name { font-size: 1.25rem; font-weight: 800; color: var(--cham-dark); letter-spacing: 0.5px; }
+  .brand-sub { font-size: 0.72rem; color: var(--cham-green); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .vol-badge-pill {
+    background: var(--cham-soft);
+    border: 1px solid var(--cham-light);
+    color: var(--cham-dark);
+    font-size: 0.82rem;
+    font-weight: 800;
+    padding: 6px 18px;
+    border-radius: var(--radius-full);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Blinker', sans-serif;
+  }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 45px 24px 90px; }
+  
+  .breadcrumb { font-size: 0.85rem; font-weight: 800; color: var(--cham-gold); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; font-family: 'Blinker', sans-serif; }
+  .page-title { font-size: clamp(2.2rem, 4.2vw, 3.4rem); font-weight: 900; line-height: 1.2; margin-bottom: 18px; color: var(--cham-dark); }
+  .page-title span { color: var(--cham-green); }
+  .page-lead { font-size: 1.15rem; color: var(--text-muted); max-width: 980px; margin-bottom: 30px; line-height: 1.8; }
+
+  /* PHOTO EMBED BANNER */
+  .photo-banner {
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    margin: 25px 0 45px;
+    box-shadow: var(--shadow-cham);
+    border: 1px solid var(--border-color);
+    background: #fff;
+  }
+  .photo-banner img {
+    width: 100%;
+    height: auto;
+    max-height: 520px;
+    object-fit: cover;
+    display: block;
+  }
+  .photo-caption {
+    padding: 14px 22px;
+    background: #fff;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+  }
+
+  /* KPI ROW */
+  .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; margin-bottom: 50px; }
+  .kpi-box {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 24px 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-cham);
+  }
+  .kpi-box::before {
+    content:'';
+    position: absolute;
+    top:0; left:0; right:0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--cham-green), var(--cham-light));
+  }
+  .kpi-value { font-size: 2.3rem; font-weight: 900; color: var(--cham-green); margin-bottom: 4px; }
+  .kpi-label { font-size: 0.9rem; color: var(--text-muted); font-weight: 600; line-height: 1.5; }
+
+  /* CHAPTER */
+  .chapter { margin-bottom: 60px; }
+  .chapter-header { margin-bottom: 24px; border-bottom: 2px solid var(--border-color); padding-bottom: 14px; }
+  .chapter-num { font-size: 0.85rem; font-weight: 800; color: var(--cham-green); text-transform: uppercase; letter-spacing: 2px; font-family: 'Blinker', sans-serif; }
+  .chapter-title { font-size: 1.9rem; font-weight: 800; color: var(--cham-dark); margin-top: 4px; }
+
+  /* CUSTOM TABLES */
+  .custom-table { width: 100%; border-collapse: collapse; margin: 20px 0 35px; background: #ffffff; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border-color); box-shadow: var(--shadow-cham); }
+  .custom-table th { background: var(--cham-soft); color: var(--cham-dark); text-align: left; padding: 16px 20px; font-size: 0.92rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--cham-light); font-family: 'Blinker', sans-serif; }
+  .custom-table td { padding: 16px 20px; border-bottom: 1px solid #edf3e7; font-size: 0.95rem; vertical-align: top; color: var(--text-body); }
+  .custom-table tr:hover td { background: #f9fbf6; }
+  .custom-table code { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; background: var(--cham-soft); color: var(--cham-dark); padding: 3px 6px; border-radius: 4px; display: inline-block; margin-bottom: 3px; }
+
+  /* BOXES */
+  .deep-box { background: var(--cham-soft); border: 1px solid var(--cham-light); border-radius: var(--radius-lg); padding: 28px; margin: 24px 0; box-shadow: var(--shadow-cham); }
+  .deep-box h3 { font-size: 1.3rem; font-weight: 800; margin-bottom: 12px; color: var(--cham-dark); display: flex; align-items: center; gap: 8px; }
+  
+  .callout-cold { background: var(--cham-soft); border-left: 4px solid var(--cham-green); padding: 22px; border-radius: 0 var(--radius-md) var(--radius-md) 0; margin: 20px 0; }
+  .callout-cold h4 { color: var(--cham-dark); font-weight: 800; margin-bottom: 8px; font-size: 1.15rem; font-family: 'Blinker', sans-serif; }
+
+  .callout-gold { background: var(--cham-gold-soft); border-left: 4px solid var(--cham-gold); padding: 22px; border-radius: 0 var(--radius-md) var(--radius-md) 0; margin: 20px 0; }
+  .callout-gold h4 { color: #b45309; font-weight: 800; margin-bottom: 8px; font-size: 1.15rem; font-family: 'Blinker', sans-serif; }
+
+  .callout-red { background: var(--cham-red-soft); border-left: 4px solid var(--cham-red); padding: 22px; border-radius: 0 var(--radius-md) var(--radius-md) 0; margin: 20px 0; }
+  .callout-red h4 { color: #9a3412; font-weight: 800; margin-bottom: 8px; font-size: 1.15rem; font-family: 'Blinker', sans-serif; }
+
+  .formula-box { background: var(--cham-deep); border-radius: var(--radius-md); padding: 20px 24px; margin: 18px 0; font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; color: #d9f2c7; line-height: 1.7; overflow-x: auto; white-space: pre-wrap; }
+
+  .grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 24px 0; }
+  @media(max-width:850px){ .grid-2col { grid-template-columns: 1fr; } }
+  .card-stat { background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 26px; box-shadow: var(--shadow-cham); }
+  .card-stat h4 { font-size: 1.2rem; font-weight: 800; margin-bottom: 10px; color: var(--cham-dark); font-family: 'Blinker', sans-serif; }
+
+  .script-card { background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 24px; margin: 20px 0; box-shadow: var(--shadow-cham); }
+  .script-card h4 { font-size: 1.25rem; font-weight: 800; color: var(--cham-dark); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; font-family: 'Blinker', sans-serif; }
+  .script-tag { background: var(--cham-soft); color: var(--cham-green); font-size: 0.78rem; font-weight: 800; padding: 4px 12px; border-radius: 9999px; border: 1px solid var(--cham-light); }
+
+  .quote-box { background: #fdfefc; border-left: 4px solid var(--cham-light); padding: 14px 18px; margin: 12px 0; font-style: italic; color: #43513d; font-size: 0.95rem; border-radius: 0 8px 8px 0; }
+  .quote-pos { border-left-color: var(--cham-green); background: #f4f8ef; }
+  .quote-neg { border-left-color: var(--cham-red); background: #fff5f2; }
+
+  /* 5-LAYER FRAMEWORK DIAGRAM */
+  .framework-flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin: 40px 0 60px; }
+  @media(max-width:992px){ .framework-flow { grid-template-columns: 1fr; } }
+  .layer-card {
+    background: var(--cham-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 24px 18px;
+    box-shadow: var(--shadow-cham);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+  .layer-card::before {
+    content:'';
+    position: absolute;
+    top:0; left:0; right:0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--cham-green), var(--cham-light));
+  }
+  .layer-card:hover { transform: translateY(-4px); box-shadow: 0 16px 30px rgba(83, 120, 62, 0.15); border-color: var(--cham-green); }
+  .layer-num { font-size: 0.78rem; font-weight: 800; color: var(--cham-gold); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; font-family: 'Blinker', sans-serif; }
+  .layer-name { font-size: 1.25rem; font-weight: 800; color: var(--cham-dark); margin-bottom: 10px; font-family: 'Blinker', sans-serif; }
+  .layer-desc { font-size: 0.88rem; color: var(--text-body); line-height: 1.55; margin-bottom: 16px; }
+  .layer-tag { background: var(--cham-soft); color: var(--cham-dark); border: 1px solid var(--cham-light); padding: 5px 12px; border-radius: var(--radius-full); font-size: 0.78rem; font-weight: 700; text-align: center; }
+
+  .sentiment-bar-wrapper { margin: 24px 0 36px; background: #fff; padding: 24px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-cham); }
+  .sentiment-bar { height: 32px; width: 100%; background: #e6edd9; border-radius: var(--radius-full); display: flex; overflow: hidden; margin-bottom: 14px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.06); }
+  .bar-pos { background: linear-gradient(90deg, #53783e, #78953e); height: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.82rem; font-weight: 800; color: #fff; font-family: 'Blinker', sans-serif; }
+  .bar-neu { background: #9dae8d; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.82rem; font-weight: 800; color: #fff; font-family: 'Blinker', sans-serif; }
+  .bar-neg { background: linear-gradient(90deg, #dc2626, #c2410c); height: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.82rem; font-weight: 800; color: #fff; font-family: 'Blinker', sans-serif; }
+
+  footer { text-align: center; padding: 50px 20px; border-top: 1px solid var(--border-color); margin-top: 80px; font-size: 0.9rem; color: var(--text-muted); background: #ffffff; }
+  footer p { margin-bottom: 4px; }
+</style>
+
+</head>
+<body>
+
+  <header class="standalone-header">
+    <div class="brand-group">
+      <img src="https://chamdalat.vn/wp-content/uploads/2023/11/logo-cham-300x129.png" alt="CHẠM ĐÀ LẠT" class="brand-logo-img" onerror="this.style.display='none'; document.getElementById('logo-fallback-04').style.display='flex';">
+      <div id="logo-fallback-04" style="display:none; align-items:center; gap:12px;">
+        <div class="brand-icon">🥑</div>
+        <div>
+          <div class="brand-name">CHẠM ĐÀ LẠT</div>
+          <div class="brand-sub">Kem Bơ Tươi Đà Lạt từ 100% bơ nguyên chất</div>
+        </div>
+      </div>
+    </div>
+    <div class="vol-badge-pill">TẬP 04 • BÁO CÁO ĐỘC LẬP</div>
+  </header>
+
+  <div class="container">
+<div class="breadcrumb">CẨM NANG VIRAL MARKETING & SÁNG TẠO NỘI DUNG • TẬP 04 / 06</div>
+    <h1 class="page-title">Cẩm Nang Kỹ Thuật Social Media & <span>Kịch Bản Video Triệu View Ngành Bơ</span></h1>
+    <p class="page-lead">
+      Cẩm nang tác chiến truyền thông chuẩn mực cho Creator & Marketing Director: Giải mã thuật toán phân phối TikTok/Reels 2026, 7 kịch bản video viral triệu view từng giây, kỹ thuật thiết kế âm thanh ASMR kích hoạt vị giác, bộ quy chuẩn hình ảnh Chiaroscuro và lộ trình Content 30 ngày chuyển đổi khách đến cửa hàng.
+    </p>
+
+    <div class="photo-banner">
+      <img src="assets/images/img_affocado_signature.jpg" alt="Khoảnh khắc rót Espresso lên viên kem bơ Affocado Chạm Đà Lạt">
+      <div class="photo-caption">
+        <span>🎬</span> <strong>Hình 1:</strong> Visual Hook triệu view kinh điển — Dòng cà phê Arabica Cầu Đất nóng hổi từ từ lan tỏa và làm tan chảy viên kem bơ sáp xanh ngọc bích tại Chạm Đà Lạt (chamdalat.vn), đánh gục mọi giác quan người xem trong 3 giây đầu tiên.
+      </div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi-box">
+        <div class="kpi-value">2.8 Tỷ</div>
+        <div class="kpi-label">Lượt xem tích lũy của hashtag #kembo và #avocadocoffee trên TikTok</div>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-value">3.2 Giây</div>
+        <div class="kpi-label">Thời gian vàng giữ chân (Retention Hook) quyết định video có lọt vào FYP hay không</div>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-value">7 Kịch Bản</div>
+        <div class="kpi-label">Kịch bản chi tiết từng giây: Visual, Audio, SFX, Voiceover và Call-to-Action</div>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-value">30 Ngày Content</div>
+        <div class="kpi-label">Lịch phát sóng video đa kênh phủ sóng Facebook, TikTok, Instagram Reels</div>
+      </div>
+    </div>
+
+    <!-- CHAPTER 1 -->
+    <div class="chapter">
+      <div class="chapter-header">
+        <span class="chapter-num">CHƯƠNG 01</span>
+        <h2 class="chapter-title">Giải Mã Thuật Toán Phân Phối Video F&B TikTok & Reels 2026</h2>
+      </div>
+
+      <p>
+        Trong năm 2026, thuật toán phân phối nội dung của TikTok và Meta Reels không còn ưu tiên số lượng đăng tràn lan, mà chuyển sang tính điểm theo trọng số tương tác sâu (Deep Engagement Weights). Một video F&B chỉ được đẩy vào luồng phân phối triệu view (FYP Pool 3) khi thỏa mãn các chỉ số toán học sau:
+      </p>
+
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Chỉ số thuật toán (Metrics)</th>
+            <th>Trọng số điểm (Weight)</th>
+            <th>Ngưỡng đạt tiêu chuẩn Viral</th>
+            <th>Bí quyết kỹ thuật của Chạm Đà Lạt</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>3-Second Hook Retention</strong></td>
+            <td><strong>35% (Quan trọng nhất)</strong></td>
+            <td><strong>&ge; 68%</strong> người xem ở lại qua 3 giây đầu</td>
+            <td>Mở màn bằng chuyển động bùng nổ: Dao cắt đôi quả bơ xoay tròn lộ cơm vàng sáp, hoặc muỗng xúc kem bơ dốc ngược không rơi.</td>
+          </tr>
+          <tr>
+            <td><strong>Loop & Rewatch Rate</strong></td>
+            <td><strong>25%</strong></td>
+            <td><strong>&ge; 18%</strong> người xem xem lại lần 2</td>
+            <td>Thiết kế kết video liền mạch với đầu video (Seamless Loop), âm thanh ASMR vòng lặp không bị đứt quãng.</td>
+          </tr>
+          <tr>
+            <td><strong>Save & Bookmark Rate</strong></td>
+            <td><strong>20%</strong></td>
+            <td><strong>&ge; 8.5%</strong> trên tổng lượt xem</td>
+            <td>Cung cấp giá trị thực: Công thức tự làm tại nhà (DIY), địa chỉ quán đẹp Đà Lạt, mẹo phân biệt bơ chín già không bị đắng.</td>
+          </tr>
+          <tr>
+            <td><strong>Share Rate (Gửi cho bạn bè)</strong></td>
+            <td><strong>20%</strong></td>
+            <td><strong>&ge; 5.0%</strong> trên tổng lượt xem</td>
+            <td>Đánh vào tâm lý rủ rê đi chơi: "Tag ngay đứa bạn thân mê bơ vào đây để cuối tuần đi Đà Lạt!".</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CHAPTER 2 -->
+    <div class="chapter">
+      <div class="chapter-header">
+        <span class="chapter-num">CHƯƠNG 02</span>
+        <h2 class="chapter-title">7 Kịch Bản Video Triệu View Chi Tiết (Storyboard Từng Giây)</h2>
+      </div>
+
+      <div class="script-card">
+        <h4>Kịch Bản 01: "Affocado Chạm - Khi Espresso Gặp Kem Bơ Sáp" <span class="script-tag">Signature Hook • Menu R&D</span></h4>
+        <p>• <strong>00:00 – 00:03 (Visual Hook):</strong> Cận cảnh Macro viên kem bơ xanh ngọc bích mịn màng trong ly thủy tinh đọng sương lạnh. Tiếng rót dòng cà phê espresso bốc khói nghi ngút đổ tràn lên viên kem (Âm thanh sizzle nóng lạnh tương phản cực độ).</p>
+        <p style="margin-top:8px;">• <strong>00:03 – 00:08 (Voiceover):</strong> <em>"Bạn đã bao giờ thử cảm giác uống cà phê mà lại thấy béo ngậy như ăn bơ sáp tươi chưa?"</em></p>
+        <p style="margin-top:8px;">• <strong>00:08 – 00:18 (Sensory Action):</strong> Muỗng bạc xúc một miếng kem bơ ngập cà phê đưa sát ống kính, thấy rõ kết cấu dẻo quánh không một dăm đá. Tiếng nhai vụn dừa sấy giòn rụm bên trên.</p>
+        <p style="margin-top:8px;">• <strong>00:18 – 00:25 (Brand Call-to-Action):</strong> Góc quay không gian quán Chạm ngập tràn ánh nắng thông reo. <em>"Món đinh chỉ có tại Chạm Đà Lạt — Thử ngay hôm nay nhé!"</em></p>
+      </div>
+
+      <div class="script-card">
+        <h4>Kịch Bản 02: "Thử Thách Dốc Ngược Muỗng Kem Bơ Không Rơi" <span class="script-tag">Challenge Viral • Social Proof</span></h4>
+        <p>• <strong>00:00 – 00:03:</strong> Nhân viên Chạm múc một muỗng kem bơ đầy có ngọn rồi lập tức dốc ngược hoàn toàn xuống mặt bàn mà viên kem vẫn dính chặt vào muỗng không hề rơi (Chứng minh bơ nguyên chất 100% không độn đá).</p>
+        <p style="margin-top:8px;">• <strong>00:03 – 00:15:</strong> Khách hàng tại quán hào hứng cầm ly kem bơ lật ngược bắt chước, ai cũng trầm trồ ngạc nhiên và cười thích thú.</p>
+        <p style="margin-top:8px;">• <strong>00:15 – 00:25:</strong> <em>"Bơ giả hay bơ độn đá sẽ rớt ngay tức khắc. Chỉ có Bơ 034 già sáp chuẩn Đà Lạt mới dẻo quánh thế này thôi!"</em></p>
+      </div>
+
+      <div class="script-card">
+        <h4>Kịch Bản 03: "Một Ngày Của Trái Bơ: Từ Nông Trại Đồi Thông Đến Ly Kem Bạn Cầm" <span class="script-tag">Storytelling • Traceability</span></h4>
+        <p>• <strong>00:00 – 00:05:</strong> Nắng sớm chiếu rọi sương mai trên đồi bơ Bảo Lâm. Bàn tay người nông dân nâng niu cắt tỉa từng trái bơ già da căng bóng.</p>
+        <p style="margin-top:8px;">• <strong>00:05 – 00:15:</strong> Chuyển cảnh nhanh: Xe lạnh chuyển về nhà máy IQF ➔ Máy cắt hạt lựu ➔ Nạo bơ tươi thủ công tại quầy bar của Chạm.</p>
+        <p style="margin-top:8px;">• <strong>00:15 – 00:25:</strong> Ly kem bơ hoàn thiện trao tay khách hàng. <em>"Chạm không bán sinh tố, Chạm kể câu chuyện nông sản bản địa Đà Lạt."</em></p>
+      </div>
+    </div>
+
+    <!-- CHAPTER 3 -->
+    <div class="chapter">
+      <div class="chapter-header">
+        <span class="chapter-num">CHƯƠNG 03</span>
+        <h2 class="chapter-title">Kỹ Thuật Âm Thanh ASMR Trong F&B: Phổ Tần Số Kích Hoạt Vị Giác</h2>
+      </div>
+
+      <p>
+        Não bộ con người tiết nước bọt và kích hoạt cảm giác thèm ăn thông qua phản xạ âm thanh (Auditory Gustatory Synesthesia). Để video bơ gây nghiện, âm thanh phải được thu bằng micro định hướng (Shotgun Mic Rode NTG5 hoặc Micro 3D Binaural) và cân chỉnh tần số chuẩn xác:
+      </p>
+
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Hành động âm thanh</th>
+            <th>Dải tần số trọng điểm (Hz)</th>
+            <th>Tác động tâm lý người nghe</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Tiếng dao lách vào vỏ bơ giòn</strong></td>
+            <td><strong>3.500 Hz – 5.000 Hz</strong></td>
+            <td>Tạo cảm giác quả bơ già tươi cứng, thu hái đúng độ tuổi, không bị chín ép nhũn nát.</td>
+          </tr>
+          <tr>
+            <td><strong>Tiếng nạo thìa vét sạch cơm bơ</strong></td>
+            <td><strong>250 Hz – 600 Hz (Âm trầm ấm)</strong></td>
+            <td>Kích thích cảm giác béo ngậy, dẻo sáp đậm đặc, não bộ hình dung ngay vị béo thơm trên lưỡi.</td>
+          </tr>
+          <tr>
+            <td><strong>Tiếng rắc vụn dừa sấy giòn rụm</strong></td>
+            <td><strong>4.000 Hz – 8.000 Hz (Âm cao thanh)</strong></td>
+            <td>Tạo sự háo hức muốn nhai (Chew craving), cân bằng lại cảm giác ngấy của chất béo.</td>
+          </tr>
+          <tr>
+            <td><strong>Tiếng rót cà phê espresso sôi bọt</strong></td>
+            <td><strong>800 Hz – 1.800 Hz</strong></td>
+            <td>Kích thích sự tỉnh táo, tạo cảm giác một thức uống năng lượng cao cấp dành cho buổi sáng.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CHAPTER 4 -->
+    <div class="chapter">
+      <div class="chapter-header">
+        <span class="chapter-num">CHƯƠNG 04</span>
+        <h2 class="chapter-title">Nghệ Thuật Ánh Sáng Chiaroscuro & Bảng Màu Thương Hiệu Avocado</h2>
+      </div>
+
+      <div class="deep-box">
+        <h3>🎨 Bộ Quy Chuẩn Thị Giác Dành Cho Creative Team & KOC</h3>
+        <p>• <strong>Phong cách ánh sáng Chiaroscuro (Tương phản sáng tối):</strong> Chiếu nguồn sáng chính từ hướng 10 giờ hoặc 2 giờ xuyên qua ly kem bơ để làm nổi bật màu xanh ngọc lục bảo trong vắt, tạo bóng đổ dịu nhẹ xuống mặt gỗ thông sẫm màu.</p>
+        <p style="margin-top:8px;">• <strong>Bảng màu Pantone chuẩn Chạm Đà Lạt:</strong></p>
+        <p style="margin-top:4px;">&nbsp;&nbsp;🥑 <em>Avocado Pulp Green (Pantone 14-0446 TCX):</em> Màu xanh cơm bơ sáp chín tới — Tươi mát, tràn đầy sức sống.</p>
+        <p style="margin-top:4px;">&nbsp;&nbsp;🧈 <em>Warm Butter Gold (Pantone 12-0720 TCX):</em> Màu vàng bơ mỡ gà Lâm Đồng — Béo ngậy, ngọt lành, cao cấp.</p>
+        <p style="margin-top:4px;">&nbsp;&nbsp;🌲 <em>Pine Hill Charcoal (Pantone 19-0303 TCX):</em> Màu xanh thông thẫm đồi Đà Lạt — Chiều sâu, mộc mạc và sang trọng.</p>
+      </div>
+    </div>
+
+    <!-- CHAPTER 5 -->
+    <div class="chapter">
+      <div class="chapter-header">
+        <span class="chapter-num">CHƯƠNG 05</span>
+        <h2 class="chapter-title">Lộ Trình 30 Ngày Content Calendar Đa Nền Tảng (30 Viral Concepts)</h2>
+      </div>
+
+      <p>
+        Khung phát sóng nội dung 4 tuần phủ kín các giai đoạn phễu Marketing: Nhận biết (Awareness) ➔ Yêu thích (Consideration) ➔ Chuyển đổi tới quán (Conversion) ➔ Tự hào chia sẻ (Advocacy):
+      </p>
+
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Giai đoạn</th>
+            <th>Tần suất & Tỷ lệ nội dung</th>
+            <th>Chủ đề Video Trọng Tâm</th>
+            <th>Mục tiêu KPI chiến dịch</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Tuần 1: Khơi gợi Tò mò (Teaser)</strong></td>
+            <td>4 clips / tuần (Reels + TikTok)</td>
+            <td>"Đà Lạt có một món bơ lộn ngược không rơi", Visual Affocado shot cà phê đen tràn kem xanh.</td>
+            <td>Đạt 2.0M views; 50.000 lượt lưu clip; 15.000 lượt bình luận hỏi địa chỉ.</td>
+          </tr>
+          <tr>
+            <td><strong>Tuần 2: Nguồn Gốc & Chất Lượng</strong></td>
+            <td>5 clips / tuần</td>
+            <td>Hành trình bơ 034 sạch từ đồi thông Bảo Lộc; Sự khác biệt giữa bơ sáp già vs bơ chín non đắng.</td>
+            <td>Xây dựng niềm tin uy tín tuyệt đối; xóa tan định kiến "bơ bị sượng hái non".</td>
+          </tr>
+          <tr>
+            <td><strong>Tuần 3: Đánh Giá Thực Tế KOC</strong></td>
+            <td>7 clips KOC food review</td>
+            <td>Top KOC ẩm thực trải nghiệm món Bơ Dừa Non Tuyết Sơn & Bánh Mì Bơ Dầm Sourdough.</td>
+            <td>Tạo làn sóng xếp hàng thực tế tại các điểm bán (Foot-traffic tăng 60%).</td>
+          </tr>
+          <tr>
+            <td><strong>Tuần 4: Chuyển Đổi & Tri Ân</strong></td>
+            <td>4 clips khuyến mãi check-in</td>
+            <td>Tặng ngay muỗng bơ sinh học BioFase tự hủy cho khách check-in TikTok tại quán.</td>
+            <td>Thu hút thêm 1.200 UGC (nội dung do người dùng tự quay và gắn thẻ Chạm Đà Lạt).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    <p style="font-weight: 800; color: #284d2c; font-size: 1.05rem; font-family: 'Blinker', sans-serif;">Tập 4: Cẩm Nang Kỹ Thuật Social Media & Video Triệu View</p>
+    <p>Báo cáo độc lập chuyên sâu • Chuẩn hóa lưu trữ Google Drive & Trình chiếu hội đồng thẩm định</p>
+    <p style="margin-top: 10px; font-size: 0.82rem; color: #6b7a63;">Thương hiệu: Chạm Đà Lạt (chamdalat.vn) • Chuyến tàu chở hơi thở phố núi</p>
+  </footer>
+
+</body>
+</html>

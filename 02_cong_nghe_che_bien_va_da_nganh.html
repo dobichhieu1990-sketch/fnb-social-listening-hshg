@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<title>Tập 2: Công Nghệ Chế Biến Sâu & Hệ Sinh Thái Đa Ngành Vượt Ra Ngoài F&B | Chạm Đà Lạt</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Andika:ital,wght@0,400;0,700;1,400&family=Blinker:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cham-green: #53783e;
+    --cham-dark: #284d2c;
+    --cham-deep: #1b361e;
+    --cham-light: #b6c79e;
+    --cham-soft: #eef4e6;
+    --cham-cream: #faf9f5;
+    --cham-card: #ffffff;
+    --cham-gold: #d9822b;
+    --cham-gold-soft: #fef7ec;
+    --cham-red: #c2410c;
+    --cham-red-soft: #fff1ed;
+    --border-color: #dce7d1;
+    --text-heading: #284d2c;
+    --text-body: #3c4a35;
+    --text-muted: #6b7a63;
+    --radius-xl: 18px;
+    --radius-lg: 12px;
+    --radius-md: 8px;
+    --radius-full: 9999px;
+    --shadow-cham: 0 10px 25px -5px rgba(83, 120, 62, 0.08), 0 4px 10px -2px rgba(0, 0, 0, 0.03);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Andika', sans-serif;
+    background-color: var(--cham-cream);
+    color: var(--text-body);
+    line-height: 1.75;
+    background-image: 
+      radial-gradient(circle at 10% 10%, rgba(83, 120, 62, 0.05) 0%, transparent 45%),
+      radial-gradient(circle at 90% 40%, rgba(217, 130, 43, 0.04) 0%, transparent 40%),
+      radial-gradient(circle at 50% 90%, rgba(182, 199, 158, 0.08) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+  
+  h1, h2, h3, h4, .brand-name, .kpi-value, .chapter-title, .page-title {
+    font-family: 'Blinker', sans-serif;
+    letter-spacing: -0.2px;
+  }
+  
+  /* STANDALONE HEADER MATCHING CHẠM ĐÀ LẠT */
+  .standalone-header {
+    background: #ffffff;
+    border-bottom: 2px solid var(--border-color);
+    padding: 14px 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(83, 120, 62, 0.05);
+  }
+  .brand-group { display: flex; align-items: center; gap: 14px; }
+  .brand-logo-img {
+    height: 48px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+  }
+  .brand-icon {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, #53783e, #284d2c);
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    box-shadow: 0 4px 12px rgba(83, 120, 62, 0.25);
+  }
+  .brand-name { font-size: 1.25rem; font-weight: 800; color: var(--cham-dark); letter-spacing: 0.5px; }
+  .brand-sub { font-size: 0.72rem; color: var(--cham-green); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .vol-badge-pill {
+    background: var(--cham-soft);
+    border: 1px solid var(--cham-light);
+    color: var(--cham-dark);
+    font-size: 0.82rem;
+    font-weight: 800;
+    padding: 6px 18px;
+    border-radius: var(--radius-full);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Blinker', sans-serif;
+  }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 45px 24px 90px; }
+  
+  .breadcrumb { font-size: 0.85rem; font-weight: 800; color: var(--cham-gold); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; font-family: 'Blinker', sans-serif; }
+  .page-title { font-size: clamp(2.2rem, 4.2vw, 3.4rem); font-weight: 900; line-height: 1.2; margin-bottom: 18px; color: var(--cham-dark); }
+  .page-title span { color: var(--cham-green); }
+  .page-lead { font-size: 1.15rem; color: var(--text-muted); max-width: 980px; margin-bottom: 30px; line-height: 1.8; }
+
+  /* PHOTO EMBED BANNER */
+  .photo-banner {
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    margin: 25px 0 45px;
+    box-shadow: var(--shadow-cham);
+    border: 1px solid var(--border-color);
+    background: #fff;
+  }
+  .photo-banner img {
+    width: 100%;
+    height: auto;
+    max-height: 520px;
+    object-fit: cover;
+    display: block;
+  }
+  .photo-caption {
+    padding: 14px 22px;
+    background: #fff;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+  }
+
+  /* KPI ROW */
+  .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; margin-bottom: 50px; }
+  .kpi-box {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 24px 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-cham);
+  }
+  .kpi-box::before {
+    content:'';
+    position: absolute;
+    top:0; left:0; right:0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--cham-green), var(--cham-light));
+  }
+  .kpi-value { font-size: 2.3rem; font-weight: 900; color: var(--cham-green); margin-bottom: 4px; }
+  .kpi-label { font-size: 0.9rem; color: var(--text-muted); font-weight: 600; line-height: 1.5; }
+
+  /* CHAPTER */
+  .chapter { margin-bottom: 60px; }
+  .chapter-header { margin-bottom: 24px; border-bottom: 2px solid var(--border-color); padding-bottom: 14px; }
+  .chapter-num { font-size: 0.85rem; font-weight: 800; color: var(--cham-green); text-transform: uppercase; letter-spacing: 2px; font-family: 'Blinker', sans-serif; }
+  .chapter-title { font-size: 1.9rem; font-weight: 800; color: var(--cham-dark); margin-top: 4px; }
+
+  /* CUSTOM TABLES */
+  .custom-table { width: 100%; border-collapse: collapse; margin: 20px 0 35px; background: #ffffff; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border-color); box-shadow: var(--shadow-cham); }
+  .custom-table th { background: var(--cham-soft); color: var(--cham-dark); text-align: left; padding: 16px 20px; font-size: 0.92rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--cham-light); font-family: 'Blinker', sans-serif; }
+  .custom-table td { padding: 16px 20px; border-bottom: 1px solid #edf3e7; font-size: 0.95rem; vertical-align: top; color: var(--text-body); }
+  .custom-table tr:hover td { background: #f9fbf6; }
+  .custom-table code { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; background: var(--cham-soft); color: var(--cham-dark); padding: 3px 6px; border-radius: 4px; display: inline-block; margin-bottom: 3px; }
+
+  /* BOXES */
+  .deep-box { background: var(--cham-soft); border: 1px solid var(--cham-light); border-radius: var(--radius-lg); padding: 28px; margin: 24px 0; box-shadow: var(--shadow-cham); }
+  .deep-box h3 { font-size: 1.3rem; font-weight: 800; margin-bottom: 12px; color: var(--cham-dark); display: flex; align-items: center; gap: 8px; }
+  
+  .callout-cold { background: var(--cham-soft); border-left: 4px solid var(--cham-green); padding: 22px; border-radius: 0 var(--radius-md) var(--radius-md) 0; margin: 20px 0; }
+  .callout-cold h4 { color: var(--cham-dark); font-weight: 800; margin-bottom: 8px; font-size: 1.15rem; font-family: 'Blinker', sans-serif; }
+
+  .callout-gold { background: var(--cham-gold-soft); border-left: 4px solid var(--cham-gold); padding: 22px; border-radius: 0 var(--radius-md) var(--radius-md) 0; margin: 20px 0; }
+  .callout-gold h4 { color: #b45309; font-weight: 800; margin-bottom: 8px; font-size: 1.15rem; font-family: 'Blinker', sans-serif; }
+
+  .callout-red { background: var(--cham-red-soft); border-left: 4px solid var(--cham-red); padding: 22px; border-radius: 0 var(--radius-md) var(--radius-md) 0; margin: 20px 0; }
+  .callout-red h4 { color: #9a3412; font-weight: 800; margin-bottom: 8px; font-size: 1.15rem; font-family: 'Blinker', sans-serif; }
+
+  .formula-box { background: var(--cham-deep); border-radius: var(--radius-md); padding: 20px 24px; margin: 18px 0; font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; color: #d9f2c7; line-height: 1.7; overflow-x: auto; white-space: pre-wrap; }
+
+  .grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 24px 0; }
+  @media(max-width:850px){ .grid-2col { grid-template-columns: 1fr; } }
+  .card-stat { background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 26px; box-shadow: var(--shadow-cham); }
+  .card-stat h4 { font-size: 1.2rem; font-weight: 800; margin-bottom: 10px; color: var(--cham-dark); font-family: 'Blinker', sans-serif; }
+
+  .script-card { background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 24px; margin: 20px 0; box-shadow: var(--shadow-cham); }
+  .script-card h4 { font-size: 1.25rem; font-weight: 800; color: var(--cham-dark); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; font-family: 'Blinker', sans-serif; }
+  .script-tag { background: var(--cham-soft); color: var(--cham-green); font-size: 0.78rem; font-weight: 800; padding: 4px 12px; border-radius: 9999px; border: 1px solid var(--cham-light); }
+
+  .quote-box { background: #fdfefc; border-left: 4px solid var(--cham-light); padding: 14px 18px; margin: 12px 0; font-style: italic; color: #43513d; font-size: 0.95rem; border-radius: 0 8px 8px 0; }
+  .quote-pos { border-left-color: var(--cham-green); background: #f4f8ef; }
+  .quote-neg { border-left-color: var(--cham-red); background: #fff5f2; }
+
+  /* 5-LAYER FRAMEWORK DIAGRAM */
+  .framework-flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin: 40px 0 60px; }
+  @media(max-width:992px){ .framework-flow { grid-template-columns: 1fr; } }
+  .layer-card {
+    background: var(--cham-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 24px 18px;
+    box-shadow: var(--shadow-cham);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+  .layer-card::before {
+    content:'';
+    position: absolute;
+    top:0; left:0; right:0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--cham-green), var(--cham-light));
+  }
+  .layer-card:hover { transform: translateY(-4px); box-shadow: 0 16px 30px rgba(83, 120, 62, 0.15); border-color: var(--cham-green); }
+  .layer-num { font-size: 0.78rem; font-weight: 800; color: var(--cham-gold); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; font-family: 'Blinker', sans-serif; }
+  .layer-name { font-size: 1.25rem; font-weight: 800; color: var(--cham-dark); margin-bottom: 10px; font-family: 'Blinker', sans-serif; }
+  .layer-desc { font-size: 0.88rem; color: var(--text-body); line-height: 1.55; margin-bottom: 16px; }
+  .layer-tag { background: var(--cham-soft); color: var(--cham-dark); border: 1px solid var(--cham-light); padding: 5px 12px; border-radius: var(--radius-full); font-size: 0.78rem; font-weight: 700; text-align: center; }
+
+  .sentiment-bar-wrapper { margin: 24px 0 36px; background: #fff; padding: 24px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-cham); }
+  .sentiment-bar { height: 32px; width: 100%; background: #e6edd9; border-radius: var(--radius-full); display: flex; overflow: hidden; margin-bottom: 14px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.06); }
+  .bar-pos { background: linear-gradient(90deg, #53783e, #78953e); height: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.82rem; font-weight: 800; color: #fff; font-family: 'Blinker', sans-serif; }
+  .bar-neu { background: #9dae8d; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.82rem; font-weight: 800; color: #fff; font-family: 'Blinker', sans-serif; }
+  .bar-neg { background: linear-gradient(90deg, #dc2626, #c2410c); height: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.82rem; font-weight: 800; color: #fff; font-family: 'Blinker', sans-serif; }
+
+  footer { text-align: center; padding: 50px 20px; border-top: 1px solid var(--border-color); margin-top: 80px; font-size: 0.9rem; color: var(--text-muted); background: #ffffff; }
+  footer p { margin-bottom: 4px; }
+</style>
+
+</head>
+<body>
+
+  <header class="standalone-header">
+    <div class="brand-group">
+      <img src="https://chamdalat.vn/wp-content/uploads/2023/11/logo-cham-300x129.png" alt="CHẠM ĐÀ LẠT" class="brand-logo-img" onerror="this.style.display='none'; document.getElementById('logo-fallback-02').style.display='flex';">
+      <div id="logo-fallback-02" style="display:none; align-items:center; gap:12px;">
+        <div class="brand-icon">🥑</div>
+        <div>
+          <div class="brand-name">CHẠM ĐÀ LẠT</div>
+          <div class="brand-sub">Kem Bơ Tươi Đà Lạt từ 100% bơ nguyên chất</div>
+        </div>
+      </div>
+    </div>
+    <div class="vol-badge-pill">TẬP 02 • BÁO CÁO ĐỘC LẬP</div>
+  </header>
+
+  <div class="container">
+<div class="breadcrumb">BÁO CÁO CÔNG NGHỆ CHẾ BIẾN SÂU • TẬP 02 / 06</div>
+    <h1 class="page-title">Công Nghệ Chế Biến Sâu & <span>Hệ Sinh Thái Đa Ngành Vượt Ra Ngoài F&B</span></h1>
+    <p class="page-lead">
+      Đột phá từ tư duy "bán quả tươi ăn liền" sang chuỗi giá trị công nghiệp đa ngành: Dây chuyền ly tâm 3 pha trích ly dầu bơ Extra Virgin EVAO (điểm khói 271°C), bản quyền hạt nhựa sinh học BioFase tự hủy 240 ngày từ hạt bơ, dược liệu ASU chống thoái hóa khớp và trà lá bơ sấy lạnh Oolong.
+    </p>
+
+    <div class="photo-banner">
+      <img src="assets/images/img_biofase_eco.jpg" alt="Hệ Sinh Thái Đa Ngành Chạm Đà Lạt: Dầu Bơ, Muỗng BioFase & Trà Lá Bơ">
+      <div class="photo-caption">
+        <span>🌿</span> <strong>Hình 1:</strong> Hệ sinh thái Zero-Waste Chạm Đà Lạt (chamdalat.vn) — Chai dầu bơ ép lạnh nguyên chất EVAO, bộ muỗng thìa sinh học tự hủy 240 ngày từ hạt bơ và tách trà lá bơ Oolong cao nguyên.
+      </div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi-box">
+        <div class="kpi-value">271°C</div>
+        <div class="kpi-label">Điểm khói dầu bơ ép lạnh EVAO — Vượt trội dầu Olive (190°C)</div>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-value">240 Ngày</div>
+        <div class="kpi-label">Thời gian phân hủy hoàn toàn hạt nhựa BioFase trong đất tự nhiên</div>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-value">100% Zero-Waste</div>
+        <div class="kpi-label">Tối ưu hóa toàn bộ quả bơ: Cơm, Vỏ, Hạt, Lá không bỏ phí</div>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-value">4 Ngành Công Nghiệp</div>
+        <div class="kpi-label">F&B Thượng Hạng, Vật Liệu Sinh Học, Dược Phẩm & Mỹ Phẩm Da</div>
+      </div>
+    </div>
+
+    <!-- CHAPTER 1 -->
+    <div class="chapter">
+      <div class="chapter-header">
+        <span class="chapter-num">CHƯƠNG 01</span>
+        <h2 class="chapter-title">Dầu Bơ Siêu Nguyên Chất (Extra Virgin Avocado Oil - EVAO)</h2>
+      </div>
+
+      <p>
+        Trong ẩm thực cao cấp và dinh dưỡng hiện đại, Dầu Bơ Siêu Nguyên Chất (EVAO) đang soán ngôi dầu Olive để trở thành <strong>"Nữ hoàng dầu thực vật"</strong> nhờ hàm lượng axit béo không bão hòa đơn (Oleic Acid chiếm 70–75%) và điểm khói chịu nhiệt cao nhất thế giới F&B (271°C so với 190°C của dầu Olive Extra Virgin).
+      </p>
+
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Chỉ tiêu chất lượng</th>
+            <th>Dầu Bơ Chạm EVAO (Tiêu chuẩn xuất khẩu)</th>
+            <th>Dầu Olive Extra Virgin (Thị trường)</th>
+            <th>Ý nghĩa dinh dưỡng & Ẩm thực</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Điểm khói (Smoke Point)</strong></td>
+            <td><strong>271°C (520°F)</strong></td>
+            <td>190°C – 205°C</td>
+            <td>Không bị biến tính, không sinh chất gây ung thư khi chiên, xào, áp chảo nhiệt cao hoặc rưới sốt bơ nướng.</td>
+          </tr>
+          <tr>
+            <td><strong>Axit Oleic (Omega-9)</strong></td>
+            <td><strong>71.5% – 76.0%</strong></td>
+            <td>65.0% – 72.0%</td>
+            <td>Hạ mỡ máu LDL xấu, tăng HDL tốt, bảo vệ sức khỏe tim mạch và chống viêm tế bào mãn tính.</td>
+          </tr>
+          <tr>
+            <td><strong>Chỉ số Axit tự do (FFA)</strong></td>
+            <td><strong>&lt; 0.5% (axit oleic)</strong></td>
+            <td>&le; 0.8%</td>
+            <td>Đạt chuẩn Extra Virgin thượng hạng quốc tế (Codex Alimentarius), vị béo thanh khiết, không ngái dầu.</td>
+          </tr>
+          <tr>
+            <td><strong>Vitamin E (Alpha-tocopherol)</strong></td>
+            <td><strong>130 – 160 mg/kg</strong></td>
+            <td>80 – 120 mg/kg</td>
+            <td>Chất chống oxy hóa tự nhiên cực mạnh, kéo dài thời hạn bảo quản lên 24 tháng trong chai thủy tinh sẫm màu.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="deep-box">
+        <h3>🏭 Quy Trình Trích Ly Ly Tâm 3 Pha Decanter Nhiệt Độ Thấp (&lt; 40°C)</h3>
+        <p>• <strong>Bước 1 (Nghiền & Nhào Malaxation):</strong> Thịt bơ sáp sau rửa sạch được nghiền mịn và đưa vào bồn nhào malaxer gia nhiệt nhẹ $38^\circ C$ trong 45 phút dưới môi trường khí trơ $N_2$ để giải phóng các giọt lipid vi bào.</p>
+        <p style="margin-top:8px;">• <strong>Bước 2 (Phân tách Ly tâm 3 Pha Decanter):</strong> Lực ly tâm cực đại $4.200 	imes g$ tách hỗn hợp thành 3 pha riêng biệt: Bã xơ thô nặng nhất văng ra ngoài, nước tế bào ở tầng giữa, và dòng dầu bơ tinh khiết nhẹ nhất nổi lên đỉnh.</p>
+        <p style="margin-top:8px;">• <strong>Bước 3 (Đánh trong Tinh lọc Disc-stack):</strong> Dầu bơ đi qua máy ly tâm đĩa tốc độ cao $8.500	ext{ vòng/phút}$ để loại bỏ triệt để vi cặn, cho ra dòng dầu xanh ngọc bích sánh mịn thơm mùi cỏ xanh cao nguyên.</p>
+      </div>
+    </div>
+
+    <!-- CHAPTER 2 -->
+    <div class="chapter">
+      <div class="chapter-header">
+        <span class="chapter-num">CHƯƠNG 02</span>
+        <h2 class="chapter-title">Công Nghệ Hạt Nhựa Sinh Học Tự Hủy Từ Hạt Bơ (BioFase Technology)</h2>
+      </div>
+
+      <p>
+        Một trong những phát kiến vĩ đại của ngành vật liệu sinh học thế giới là công nghệ chuyển hóa <strong>Hạt bơ (chiếm 15-18% khối lượng quả)</strong> thành nhựa sinh học tự hủy hoàn toàn (Biopolymer). Thay vì tốn hàng tỷ đồng để xử lý rác thải hạt bơ mục rữa gây ô nhiễm, Chạm Đà Lạt ứng dụng công nghệ này để tạo ra bộ dao, muỗng, nĩa, ống hút sinh học độc quyền cho toàn chuỗi F&B.
+      </p>
+
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Tiêu chí so sánh</th>
+            <th>Nhựa Sinh Học Hạt Bơ (BioFase Standard)</th>
+            <th>Nhựa PLA (Tinh bột ngô)</th>
+            <th>Nhựa Truyền Thống (PP / PE / PS)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Thời gian phân hủy</strong></td>
+            <td><strong>240 ngày</strong> (chôn lấp đất vườn tự nhiên)</td>
+            <td>Phải vào lò ủ công nghiệp ($>60^\circ C$)</td>
+            <td><strong>450 – 1.000 năm</strong> (gây ô nhiễm vĩnh viễn)</td>
+          </tr>
+          <tr>
+            <td><strong>Nguồn gốc vật liệu</strong></td>
+            <td><strong>100% Phụ phẩm nông nghiệp hạt bơ</strong></td>
+            <td>Chiếm dụng đất trồng lương thực (ngô/mía)</td>
+            <td>100% từ dầu mỏ hóa thạch</td>
+          </tr>
+          <tr>
+            <td><strong>Độ bền nhiệt</strong></td>
+            <td>Chịu nhiệt tốt từ <strong>-20°C đến +110°C</strong></td>
+            <td>Mềm biến dạng khi gặp nhiệt $>55^\circ C$</td>
+            <td>Thôi nhiễm vi nhựa & độc tố BPA khi gặp đồ nóng</td>
+          </tr>
+          <tr>
+            <td><strong>Tiêu chuẩn quốc tế</strong></td>
+            <td><strong>ASTM D6400, EN 13432, FDA Approved</strong></td>
+            <td>ASTM D6400</td>
+            <td>Bị cấm tại EU, Canada, California</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CHAPTER 3 -->
+    <div class="chapter">
+      <div class="chapter-header">
+        <span class="chapter-num">CHƯƠNG 03</span>
+        <h2 class="chapter-title">Dược Mỹ Phẩm Từ Bơ: Hoạt Chất ASU & Peptide Tái Sinh Làn Da</h2>
+      </div>
+
+      <div class="grid-2col">
+        <div class="card-stat">
+          <h4 style="color:var(--primary);">💊 Dược Phẩm: Hoạt Chất ASU (Avocado Soybean Unsaponifiables)</h4>
+          <p>• Phân đoạn chất béo không xà phòng hóa từ dầu bơ (1/3) và đậu nành (2/3) đã được y học Châu Âu công nhận là thuốc điều trị thoái hóa khớp thoái hóa sụn (OA).</p>
+          <p style="margin-top:10px;">• Cơ chế sinh học: Kích thích tổng hợp Collagen tuýp II và Proteoglycan trong tế bào sụn khớp; đồng thời ức chế cytokine tiền viêm IL-1, TNF-alpha làm giảm đau khớp tự nhiên.</p>
+          <p style="margin-top:10px;">• Thị trường thuốc ASU toàn cầu đạt quy mô <strong>$1.45 tỷ USD</strong> với tốc độ tăng trưởng 6.4%/năm.</p>
+        </div>
+
+        <div class="card-stat">
+          <h4 style="color:var(--gold);">✨ Mỹ Phẩm: Phức Hợp Dưỡng Ẩm Peptide Bơ Chữa Lành Da</h4>
+          <p>• Sterolin tự nhiên trong dầu bơ có cấu trúc tương thích tuyệt đối với lớp lipid biểu bì người, thẩm thấu sâu xuống tầng hạ bì mà không gây bít tắc lỗ chân lông (Non-comedogenic rating: 2).</p>
+          <p style="margin-top:10px;">• Kích hoạt quá trình tự phục hồi hàng rào bảo vệ da sau peel, laser hoặc tổn thương cháy nắng, giảm đỏ da tức thì sau 30 phút sử dụng.</p>
+          <p style="margin-top:10px;">• Dòng sản phẩm mở rộng thương hiệu: Son dưỡng môi sáp bơ sáp 034, Serum cấp ẩm sâu, Kem dưỡng thể bơ organic.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAPTER 4 -->
+    <div class="chapter">
+      <div class="chapter-header">
+        <span class="chapter-num">CHƯƠNG 04</span>
+        <h2 class="chapter-title">Dược Liệu Học Trà Lá Bơ Oolong Sấy Lạnh: Tán Sỏi Thận & Ổn Định Đường Huyết</h2>
+      </div>
+
+      <p>
+        Lá bơ từ lâu là vị thuốc dân gian quý giá của người bản địa Tây Nguyên nhưng chưa bao giờ được thương mại hóa công nghiệp. Nghiên cứu hóa thực vật của Chạm Đà Lạt phối hợp với Viện Nghiên cứu Nông nghiệp Cao nguyên chỉ ra trong lá bơ già chứa nồng độ hợp chất Flavonoid cực cao:
+      </p>
+
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Hợp chất dược lý</th>
+            <th>Hàm lượng (mg/100g lá khô)</th>
+            <th>Công dụng trị liệu lâm sàng</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Quercetin & Kaempferol</strong></td>
+            <td><strong>850 – 1.120 mg</strong></td>
+            <td>Chất chống oxy hóa flavonoid kìm hãm hình thành tinh thể canxi oxalat, hỗ trợ tán sỏi thận nhẹ và lợi tiểu tự nhiên.</td>
+          </tr>
+          <tr>
+            <td><strong>Persea Gratissima Saponins</strong></td>
+            <td><strong>420 – 580 mg</strong></td>
+            <td>Kích thích thụ thể insulin nội bào, hỗ trợ ổn định đường huyết sau bữa ăn cho người tiền tiểu đường.</td>
+          </tr>
+          <tr>
+            <td><strong>Tinh dầu lá bơ tự nhiên (Estragole)</strong></td>
+            <td><strong>0.3% – 0.5% (v/w)</strong></td>
+            <td>Hương thơm thảo mộc ấm ngọt nhẹ, an thần kinh, giảm căng thẳng stress, cải thiện giấc ngủ sâu.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CHAPTER 5 -->
+    <div class="chapter">
+      <div class="chapter-header">
+        <span class="chapter-num">CHƯƠNG 05</span>
+        <h2 class="chapter-title">Ma Trận Kinh Tế Tuần Hoàn 0 Rác Thải (Zero-Waste Circular Economy Matrix)</h2>
+      </div>
+
+      <div class="callout-gold">
+        <h4>🔄 KHÉP KÍN VÒNG ĐỜI NÔNG SẢN: TỐI ĐA HÓA 100% GIÁ TRỊ QUẢ BƠ</h4>
+        <p>
+          Tại nhà máy Chạm Đà Lạt, <strong>không có một gram nào của quả bơ bị biến thành rác thải chôn lấp</strong>:
+        </p>
+        <ul style="margin: 12px 0 0 20px; line-height:1.85;">
+          <li>🥑 <strong>Phần Cơm Bơ (60.5%):</strong> Cung cấp nguyên liệu kem bơ tươi IQF, sinh tố cao cấp cho chuỗi 50 cửa hàng F&B.</li>
+          <li>🌱 <strong>Phần Hạt Bơ (16.5%):</strong> Chiết xuất biopolymer sản xuất 100% muỗng, thìa, ống hút sinh học tự hủy BioFase.</li>
+          <li>🧴 <strong>Vụn Thịt & Cơm Bơ Vỡ (6.0%):</strong> Ép dầu bơ Extra Virgin EVAO xuất khẩu và sản xuất mỹ phẩm dưỡng da.</li>
+          <li>🍵 <strong>Lá Bơ Thu Hái Định Kỳ:</strong> Chế biến thành dòng Trà Túi Lọc Thảo Dược An Thần phục vụ tại quán và bán lẻ quà tặng.</li>
+          <li>🍂 <strong>Vỏ Bơ & Bã Ép Dầu (17.0%):</strong> Ủ men vi sinh Trichoderma phối trộn làm phân hữu cơ hoàn trả cho các nông trại liên kết tại Lâm Đồng.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p style="font-weight: 800; color: #284d2c; font-size: 1.05rem; font-family: 'Blinker', sans-serif;">Tập 2: Công Nghệ Chế Biến Sâu & Hệ Sinh Thái Đa Ngành</p>
+    <p>Báo cáo độc lập chuyên sâu • Chuẩn hóa lưu trữ Google Drive & Trình chiếu hội đồng thẩm định</p>
+    <p style="margin-top: 10px; font-size: 0.82rem; color: #6b7a63;">Thương hiệu: Chạm Đà Lạt (chamdalat.vn) • Chuyến tàu chở hơi thở phố núi</p>
+  </footer>
+
+</body>
+</html>
