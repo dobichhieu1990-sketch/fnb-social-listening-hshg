@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSHG Realtime Social Listening Dashboard | Chi nhánh 192 Lý Tự Trọng</title>
+    <!-- Tailwind CSS -->
+    <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+    <style>
+        :root {
+            --navy-deep: #071224;
+            --navy-card: #0d1e38;
+            --navy-border: #1e355b;
+            --gold-royal: #f59e0b;
+            --gold-light: #fde68a;
+            --emerald-accent: #10b981;
+            --rose-danger: #f43f5e;
+            --cyan-info: #06b6d4;
+        }
+        body {
+            background-color: var(--navy-deep);
+            color: #f1f5f9;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: linear-gradient(135deg, rgba(13, 30, 56, 0.9) 0%, rgba(10, 22, 42, 0.95) 100%);
+            border: 1px solid var(--navy-border);
+            backdrop-filter: blur(12px);
+        }
+        .glass-card-hover:hover {
+            border-color: rgba(245, 158, 11, 0.4);
+            box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.1);
+            transform: translateY(-2px);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .emerald-glow {
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.35);
+        }
+        .pulse-dot {
+            animation: pulseAnimation 2s infinite;
+        }
+        @keyframes pulseAnimation {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #071224; }
+        ::-webkit-scrollbar-thumb { background: #1e355b; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #f59e0b; }
+    </style>
+</head>
+<body class="min-h-screen text-slate-100 antialiased p-3 sm:p-6 lg:p-8">
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="max-w-7xl mx-auto space-y-6">
+
+        <!-- TOP BAR: BRANDING & REALTIME STATUS -->
+        <header class="glass-card rounded-2xl p-5 sm:p-6 border border-slate-700/60 shadow-2xl relative overflow-hidden">
+            <div class="absolute -right-20 -top-20 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5 relative z-10">
+                <div class="space-y-1.5">
+                    <div class="flex items-center gap-3">
+                        <span class="text-3xl">👑</span>
+                        <div>
+                            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight gold-gradient-text uppercase">
+                                HẢI SẢN HOÀNG GIA — REALTIME SOCIAL LISTENING
+                            </h1>
+                            <p class="text-xs sm:text-sm text-slate-400 font-medium flex items-center gap-2">
+                                <span>📍 Chi nhánh 192 Lý Tự Trọng, P. Bến Thành, Quận 1, TP.HCM</span>
+                                <span class="text-slate-600">•</span>
+                                <span class="text-amber-400/90 font-semibold">Tập dữ liệu thật 200 Google Reviews</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STATUS PILLS & ACTIONS -->
+                <div class="flex flex-wrap items-center gap-3">
+                    <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-950/60 border border-emerald-500/40 text-emerald-400 text-xs font-semibold emerald-glow">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-dot"></span>
+                        <span id="liveStatusText">LIVE SYNC: APIFY CONNECTED</span>
+                    </div>
+
+                    <button onclick="simulateNewReview()" class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/50 text-xs font-bold transition-all shadow-sm">
+                        <span>⚡</span>
+                        <span>Mô phỏng review mới</span>
+                    </button>
+
+                    <button onclick="exportCSV()" class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-600 text-xs font-semibold transition-all shadow-sm">
+                        <span>📥</span>
+                        <span>Xuất CSV</span>
+                    </button>
+
+                    <button onclick="resetData()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white border border-slate-700 transition-all text-xs" title="Làm mới lại dữ liệu gốc">
+                        <span>🔄</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- KPI SUMMARY BAR (5 METRIC CARDS) -->
+        <section class="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+            <!-- KPI 1 -->
+            <div class="glass-card glass-card-hover rounded-xl p-4 border border-slate-700/60 relative overflow-hidden">
+                <div class="flex items-center justify-between text-slate-400 text-xs font-semibold">
+                    <span>ĐIỂM GOOGLE MAPS</span>
+                    <span class="text-amber-400">★ ★ ★ ★ ★</span>
+                </div>
+                <div class="mt-2 flex items-baseline gap-2">
+                    <span class="text-3xl font-extrabold text-white" id="kpiAvgRating">4.8</span>
+                    <span class="text-xs text-slate-400">/ 5.0</span>
+                </div>
+                <div class="mt-2 text-[11px] text-emerald-400 flex items-center gap-1">
+                    <span>▲ +0.6 sao</span>
+                    <span class="text-slate-500">vs benchmark ngành F&B</span>
+                </div>
+            </div>
+
+            <!-- KPI 2 -->
+            <div class="glass-card glass-card-hover rounded-xl p-4 border border-slate-700/60 relative overflow-hidden">
+                <div class="flex items-center justify-between text-slate-400 text-xs font-semibold">
+                    <span>NET SENTIMENT (NSR)</span>
+                    <span class="text-emerald-400">📈</span>
+                </div>
+                <div class="mt-2 flex items-baseline gap-2">
+                    <span class="text-3xl font-extrabold text-emerald-400" id="kpiNSR">+91.88%</span>
+                </div>
+                <div class="mt-2 text-[11px] text-amber-300 font-semibold flex items-center gap-1">
+                    <span>👑 Sức khỏe Vượng Quyền</span>
+                </div>
+            </div>
+
+            <!-- KPI 3 -->
+            <div class="glass-card glass-card-hover rounded-xl p-4 border border-slate-700/60 relative overflow-hidden">
+                <div class="flex items-center justify-between text-slate-400 text-xs font-semibold">
+                    <span>TỔNG ĐÁNH GIÁ CÀO THẬT</span>
+                    <span class="text-cyan-400">📡</span>
+                </div>
+                <div class="mt-2 flex items-baseline gap-2">
+                    <span class="text-3xl font-extrabold text-white" id="kpiTotalReviews">200</span>
+                    <span class="text-xs text-slate-400">đánh giá</span>
+                </div>
+                <div class="mt-2 text-[11px] text-slate-400 flex items-center gap-1">
+                    <span class="text-cyan-400 font-semibold">87.0%</span>
+                    <span>có nội dung viết chi tiết</span>
+                </div>
+            </div>
+
+            <!-- KPI 4 -->
+            <div class="glass-card glass-card-hover rounded-xl p-4 border border-slate-700/60 relative overflow-hidden">
+                <div class="flex items-center justify-between text-slate-400 text-xs font-semibold">
+                    <span>KHÁCH QUỐC TẾ (INBOUND)</span>
+                    <span class="text-purple-400">🌏</span>
+                </div>
+                <div class="mt-2 flex items-baseline gap-2">
+                    <span class="text-3xl font-extrabold text-purple-300" id="kpiForeignPct">> 70%</span>
+                </div>
+                <div class="mt-2 text-[11px] text-slate-400 truncate">
+                    <span>Hàn Quốc, Mỹ, Nga, Úc, Đài Loan</span>
+                </div>
+            </div>
+
+            <!-- KPI 5 -->
+            <div class="glass-card glass-card-hover rounded-xl p-4 border border-slate-700/60 relative overflow-hidden col-span-2 lg:col-span-1">
+                <div class="flex items-center justify-between text-slate-400 text-xs font-semibold">
+                    <span>CSKH PHẢN HỒI (SLA)</span>
+                    <span class="text-emerald-400">🛡️</span>
+                </div>
+                <div class="mt-2 flex items-baseline gap-2">
+                    <span class="text-3xl font-extrabold text-emerald-300">~100%</span>
+                </div>
+                <div class="mt-2 text-[11px] text-emerald-400 font-medium">
+                    <span>Song ngữ Việt - Anh chuẩn mực</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- NAVIGATION TABS -->
+        <nav class="flex overflow-x-auto gap-2 border-b border-slate-700/80 pb-2 text-sm font-semibold scrollbar-none">
+            <button onclick="switchTab('analytics')" id="tabBtn-analytics" class="tab-btn px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 bg-amber-500 text-slate-950 font-bold shadow-lg shadow-amber-500/20">
+                <span>📊</span>
+                <span>TẦNG 3: Sức Khỏe & NSR (+91.88%)</span>
+            </button>
+            <button onclick="switchTab('feed')" id="tabBtn-feed" class="tab-btn px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 bg-slate-800/80 hover:bg-slate-700 text-slate-300">
+                <span>⚡</span>
+                <span>TẦNG 1-2: Live Feed 200 Reviews</span>
+                <span id="feedCountBadge" class="px-2 py-0.5 rounded-full text-[10px] bg-slate-700 text-amber-300 font-bold">200</span>
+            </button>
+            <button onclick="switchTab('bottlenecks')" id="tabBtn-bottlenecks" class="tab-btn px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 bg-slate-800/80 hover:bg-slate-700 text-slate-300">
+                <span>🚨</span>
+                <span>TẦNG 4: RCA Điểm Nghẽn & SLA</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] bg-rose-950 text-rose-300 border border-rose-500/40 font-bold">8 cảnh báo</span>
+            </button>
+            <button onclick="switchTab('staff')" id="tabBtn-staff" class="tab-btn px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 bg-slate-800/80 hover:bg-slate-700 text-slate-300">
+                <span>🏆</span>
+                <span>TẦNG 4: Bảng Vàng Nhân Viên MVP</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] bg-amber-950 text-amber-300 border border-amber-500/40 font-bold">80 lượt khen</span>
+            </button>
+            <button onclick="switchTab('competitors')" id="tabBtn-competitors" class="tab-btn px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 bg-slate-800/80 hover:bg-slate-700 text-slate-300">
+                <span>👑</span>
+                <span>TẦNG 5: Khuyến Nghị SOP & Đối Thủ</span>
+            </button>
+        </nav>
+
+        <!-- TAB CONTENT 1: ANALYTICS & CHARTS -->
+        <div id="tabContent-analytics" class="tab-pane space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                <!-- STAR DISTRIBUTION CHART -->
+                <div class="glass-card rounded-2xl p-5 border border-slate-700/60 lg:col-span-2">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="text-base font-bold text-white flex items-center gap-2">
+                                <span>⭐</span>
+                                <span>Cơ Cấu Phân Bổ Số Sao (200 Reviews)</span>
+                            </h3>
+                            <p class="text-xs text-slate-400">Bấm vào từng thanh để lọc danh sách review tương ứng</p>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30 font-bold">92.5% Đạt 5 Sao</span>
+                    </div>
+
+                    <div class="space-y-3.5" id="starBarsContainer">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+
+                <!-- SENTIMENT DONUT CHART (SVG) -->
+                <div class="glass-card rounded-2xl p-5 border border-slate-700/60 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-base font-bold text-white flex items-center gap-2 mb-1">
+                            <span>🎭</span>
+                            <span>Tỷ Lệ Sắc Thái (Sentiment)</span>
+                        </h3>
+                        <p class="text-xs text-slate-400 mb-4">Mô hình phân loại đa tầng NLP F&B</p>
+                        
+                        <div class="flex justify-center items-center py-2 relative">
+                            <svg width="200" height="200" viewBox="0 0 42 42" class="transform -rotate-90">
+                                <circle cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#1e293b" stroke-width="6"></circle>
+                                <!-- Positive (94.5%) -->
+                                <circle id="donutPositive" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#10b981" stroke-width="6" stroke-dasharray="94.5 5.5" stroke-dashoffset="0"></circle>
+                                <!-- Neutral (1.5%) -->
+                                <circle id="donutNeutral" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#f59e0b" stroke-width="6" stroke-dasharray="1.5 98.5" stroke-dashoffset="-94.5"></circle>
+                                <!-- Negative (4.0%) -->
+                                <circle id="donutNegative" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#f43f5e" stroke-width="6" stroke-dasharray="4.0 96.0" stroke-dashoffset="-96.0"></circle>
+                            </svg>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
+                                <span class="text-xs text-slate-400 font-semibold">TÍCH CỰC</span>
+                                <span class="text-2xl font-black text-emerald-400" id="donutPctText">94.5%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2 pt-4 border-t border-slate-700/60 text-center">
+                        <div class="p-2 rounded-lg bg-emerald-950/40 border border-emerald-500/30">
+                            <span class="block text-[10px] text-emerald-300 font-bold uppercase">Tích cực</span>
+                            <span class="text-lg font-bold text-emerald-400" id="statPosCount">189</span>
+                            <span class="block text-[10px] text-slate-400">94.5%</span>
+                        </div>
+                        <div class="p-2 rounded-lg bg-amber-950/40 border border-amber-500/30">
+                            <span class="block text-[10px] text-amber-300 font-bold uppercase">Trung lập</span>
+                            <span class="text-lg font-bold text-amber-400" id="statNeuCount">3</span>
+                            <span class="block text-[10px] text-slate-400">1.5%</span>
+                        </div>
+                        <div class="p-2 rounded-lg bg-rose-950/40 border border-rose-500/30">
+                            <span class="block text-[10px] text-rose-300 font-bold uppercase">Tiêu cực</span>
+                            <span class="text-lg font-bold text-rose-400" id="statNegCount">8</span>
+                            <span class="block text-[10px] text-slate-400">4.0%</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- DRIVERS & WORD HEATMAP -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- POSITIVE DRIVERS -->
+                <div class="glass-card rounded-2xl p-5 border border-slate-700/60">
+                    <h3 class="text-base font-bold text-white flex items-center gap-2 mb-4">
+                        <span class="text-emerald-400">▲</span>
+                        <span>Động Lực Tích Cực Hàng Đầu (Positive Drivers)</span>
+                    </h3>
+                    <div class="space-y-3">
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold mb-1">
+                                <span class="text-slate-200">Khen ngợi nhân viên phục vụ đích danh</span>
+                                <span class="text-emerald-400 font-bold">80 lượt nhắc (40.0%)</span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
+                                <div class="bg-gradient-to-r from-emerald-500 to-teal-400 h-2.5 rounded-full" style="width: 80%"></div>
+                            </div>
+                            <p class="text-[11px] text-slate-400 mt-1">Đặc biệt là cử chỉ hướng dẫn bóc sò, bẻ cua tận bàn cho khách quốc tế.</p>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold mb-1">
+                                <span class="text-slate-200">Hải sản tươi sống bơi tại hồ (Visual Freshness)</span>
+                                <span class="text-emerald-400 font-bold">35 lượt nhắc (17.5%)</span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
+                                <div class="bg-gradient-to-r from-emerald-500 to-teal-400 h-2.5 rounded-full" style="width: 45%"></div>
+                            </div>
+                            <p class="text-[11px] text-slate-400 mt-1">Khách ví trải nghiệm nhìn bể kính như thủy cung hải sản sống.</p>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold mb-1">
+                                <span class="text-slate-200">Chất lượng chế biến & Món ăn ngon</span>
+                                <span class="text-emerald-400 font-bold">42 lượt nhắc (21.0%)</span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
+                                <div class="bg-gradient-to-r from-emerald-500 to-teal-400 h-2.5 rounded-full" style="width: 52%"></div>
+                            </div>
+                            <p class="text-[11px] text-slate-400 mt-1">Sốt trứng muối, nướng phô mai, cháo tôm hùm được khen ngợi.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NEGATIVE BOTTLENECKS -->
+                <div class="glass-card rounded-2xl p-5 border border-slate-700/60">
+                    <h3 class="text-base font-bold text-white flex items-center gap-2 mb-4">
+                        <span class="text-rose-400">▼</span>
+                        <span>Điểm Nghẽn & Bức Xúc Vận Hành (Negative Drivers)</span>
+                    </h3>
+                    <div class="space-y-3">
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold mb-1">
+                                <span class="text-slate-200">Thời gian chờ chế biến sống lâu (40 - 45 phút)</span>
+                                <span class="text-rose-400 font-bold">4 phàn nàn trực tiếp</span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
+                                <div class="bg-rose-500 h-2.5 rounded-full" style="width: 60%"></div>
+                            </div>
+                            <p class="text-[11px] text-slate-400 mt-1">Khách Hàn Quốc (이용호) bức xúc vì món ra từng đĩa cách 10 phút.</p>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold mb-1">
+                                <span class="text-slate-200">Sự cố dồn món & Chia bill nhóm đông</span>
+                                <span class="text-rose-400 font-bold">2 vụ việc</span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
+                                <div class="bg-amber-500 h-2.5 rounded-full" style="width: 35%"></div>
+                            </div>
+                            <p class="text-[11px] text-slate-400 mt-1">Đoàn 7 khách gọi 7 con ghẹ bị dồn chung vào 1 tô không cay, mất vị khách ăn cay.</p>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold mb-1">
+                                <span class="text-slate-200">Món Xôi Cua không ngon như quảng cáo</span>
+                                <span class="text-rose-400 font-bold">2 phàn nàn</span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
+                                <div class="bg-amber-500 h-2.5 rounded-full" style="width: 30%"></div>
+                            </div>
+                            <p class="text-[11px] text-slate-400 mt-1">Khách cảm giác giá cao nhưng xôi chưa đạt kỳ vọng quảng cáo.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB CONTENT 2: LIVE REVIEW FEED & SEARCH -->
+        <div id="tabContent-feed" class="tab-pane hidden space-y-4">
+            <!-- FILTER TOOLBAR -->
+            <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-700/60 space-y-4">
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <div class="relative flex-1">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">🔍</span>
+                        <input type="text" id="searchInput" oninput="applyFilters()" placeholder="Tìm kiếm theo tên khách, từ khóa (Bé Ngân, chờ, xôi cua, crab, snails, bill...)" class="w-full pl-10 pr-4 py-2.5 bg-slate-900/90 border border-slate-700 rounded-xl text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-amber-500 transition-colors">
+                    </div>
+                    <select id="sortSelect" onchange="applyFilters()" class="px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs sm:text-sm text-slate-300 focus:outline-none focus:border-amber-500">
+                        <option value="default">Mới nhất (Mặc định)</option>
+                        <option value="stars-asc">Số sao thấp nhất trước (Ưu tiên soi phốt)</option>
+                        <option value="stars-desc">Số sao cao nhất trước (5 sao)</option>
+                    </select>
+                </div>
+
+                <!-- FILTER CHIPS -->
+                <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-800 text-xs font-semibold">
+                    <span class="text-slate-400 text-[11px] uppercase tracking-wider mr-1">Bộ lọc nhanh:</span>
+                    <button onclick="setFilterStar('all')" id="btnFilter-star-all" class="chip-btn px-3 py-1.5 rounded-lg bg-amber-500 text-slate-950 font-bold transition-all">Tất cả (200)</button>
+                    <button onclick="setFilterStar(5)" id="btnFilter-star-5" class="chip-btn px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all">★★★★★ 5 Sao (185)</button>
+                    <button onclick="setFilterStar(4)" id="btnFilter-star-4" class="chip-btn px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all">★★★★☆ 4 Sao (4)</button>
+                    <button onclick="setFilterStar(3)" id="btnFilter-star-3" class="chip-btn px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all">★★★☆☆ 3 Sao (3)</button>
+                    <button onclick="setFilterStar('neg')" id="btnFilter-star-neg" class="chip-btn px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-rose-300 transition-all">★/★★ Tiêu cực (8)</button>
+                    <button onclick="toggleFilterStaff()" id="btnFilter-staff" class="chip-btn px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-300 transition-all">👤 Khen nhân viên</button>
+                    <button onclick="toggleFilterForeign()" id="btnFilter-foreign" class="chip-btn px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-purple-300 transition-all">🌏 Khách quốc tế</button>
+                </div>
+            </div>
+
+            <!-- FEED RESULTS HEADER -->
+            <div class="flex items-center justify-between text-xs text-slate-400 px-1">
+                <div>
+                    <span>Hiển thị </span>
+                    <span id="filteredCountText" class="font-bold text-amber-400">200</span>
+                    <span> / 200 đánh giá</span>
+                </div>
+                <div id="activeFilterSummary" class="text-[11px] text-slate-500 italic"></div>
+            </div>
+
+            <!-- REVIEW CARDS CONTAINER -->
+            <div id="reviewsContainer" class="space-y-3.5">
+                <!-- Rendered dynamically by JS -->
+            </div>
+
+            <!-- PAGINATION / LOAD MORE -->
+            <div id="loadMoreSection" class="text-center pt-4">
+                <button onclick="loadMoreReviews()" id="btnLoadMore" class="px-6 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-bold text-slate-200 transition-all">
+                    Xem thêm 20 đánh giá tiếp theo...
+                </button>
+            </div>
+        </div>
+
+        <!-- TAB CONTENT 3: BOTTLENECKS & CRISIS WAR ROOM -->
+        <div id="tabContent-bottlenecks" class="tab-pane hidden space-y-6">
+            <div class="glass-card rounded-2xl p-5 border border-rose-900/40 bg-gradient-to-b from-rose-950/20 to-slate-900/90">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-rose-500/20 text-rose-400 text-xs font-bold border border-rose-500/40 mb-2">
+                            <span>🚨 PHÒNG ĐIỀU HÀNH RỦI RO & BẢO TOÀN DANH TIẾNG</span>
+                        </div>
+                        <h2 class="text-xl font-bold text-white">Bóc Tách Toàn Diện 8 Đánh Giá Tiêu Cực & Trung Lập</h2>
+                        <p class="text-xs text-slate-400 mt-1">Dữ liệu thật bóc tách từ 200 reviews của Chi nhánh 192 Lý Tự Trọng</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-3xl font-black text-rose-400">4.0%</span>
+                        <span class="block text-[11px] text-slate-400">Tỷ lệ rủi ro</span>
+                    </div>
+                </div>
+
+                <!-- 5 CRITICAL CASES -->
+                <div class="mt-6 space-y-4">
+
+                    <!-- CASE 1 -->
+                    <div class="p-4 rounded-xl bg-slate-900/90 border border-rose-500/30 space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2 py-0.5 rounded bg-rose-500 text-slate-950 font-black text-xs">1 ★</span>
+                                <span class="font-bold text-sm text-white">Khách Hàn Quốc (이용호)</span>
+                                <span class="text-xs text-slate-500">2026-09</span>
+                            </div>
+                            <span class="text-xs px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 font-semibold border border-rose-500/30">Thời gian chế biến</span>
+                        </div>
+                        <p class="text-xs text-slate-300 italic bg-slate-950/60 p-3 rounded-lg border border-slate-800">
+                            "음식 몇개 시키면 코스 요리 마냥 각각 10분은 가볍게 걸림 바쁘지도 않은데 일을 안함..."<br>
+                            <span class="text-slate-400 text-[11px]">Dịch: Gọi mấy món mà đồ ăn ra như ăn tiệc course, mỗi món cách nhau 10 phút. Quán không đông nhưng làm việc rất chậm chạp.</span>
+                        </p>
+                        <div class="text-xs space-y-1 text-slate-300 bg-slate-800/40 p-3 rounded-lg border border-slate-700/50">
+                            <span class="font-bold text-amber-400">Nguyên nhân gốc rễ (RCA):</span> Khách ăn hải sản sống nhưng quen nhịp độ nhanh của quán ăn thông thường. HSHG bắt cua tại hồ mới chế biến mất 40-45 phút nhưng nhân viên không giải thích trước.<br>
+                            <span class="font-bold text-emerald-400">Biện pháp khắc phục (SOP):</span> Bắt buộc nhân viên order nói câu tiêu chuẩn: <em>"Dạ hải sản tươi sống nhà em chế biến mất khoảng 35 - 45 phút, em xin phép lên trước món khai vị để anh/chị dùng nhé"</em>.
+                        </div>
+                    </div>
+
+                    <!-- CASE 2 -->
+                    <div class="p-4 rounded-xl bg-slate-900/90 border border-amber-500/30 space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2 py-0.5 rounded bg-amber-500 text-slate-950 font-black text-xs">3 ★</span>
+                                <span class="font-bold text-sm text-white">Khách Hân Nguyễn</span>
+                                <span class="text-xs text-slate-500">2026-09</span>
+                            </div>
+                            <span class="text-xs px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-semibold border border-amber-500/30">Chia Bill & Bếp dồn món</span>
+                        </div>
+                        <p class="text-xs text-slate-300 italic bg-slate-950/60 p-3 rounded-lg border border-slate-800">
+                            "Chúng tôi đến 7 người và chia thành 3 bill. Chúng tôi order 7 con ghẹ, trong đó 1 bill ăn không cay... Bếp dồn chung 7 con ghẹ vào 1 tô xốt Singapore không cay làm chúng tôi không chia tiền được và hỏng khẩu vị người ăn cay."
+                        </p>
+                        <div class="text-xs space-y-1 text-slate-300 bg-slate-800/40 p-3 rounded-lg border border-slate-700/50">
+                            <span class="font-bold text-amber-400">Nguyên nhân gốc rễ (RCA):</span> Thu ngân và Bếp thiếu sự liên thông. Khi khách tách bill, bếp lại gộp món để nấu cho tiện, dẫn đến hỏng trải nghiệm khách hàng.<br>
+                            <span class="font-bold text-emerald-400">Biện pháp khắc phục (SOP):</span> Quy tắc bất di bất dịch: Khách tách hóa đơn nào thì xuất phiếu bếp (KDS) riêng hóa đơn đó, cấm bếp tự ý gộp chảo nấu chung.
+                        </div>
+                    </div>
+
+                    <!-- CASE 3 -->
+                    <div class="p-4 rounded-xl bg-slate-900/90 border border-amber-500/30 space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2 py-0.5 rounded bg-amber-500 text-slate-950 font-black text-xs">3 ★</span>
+                                <span class="font-bold text-sm text-white">Khách Tram Vo</span>
+                                <span class="text-xs text-slate-500">2026-09</span>
+                            </div>
+                            <span class="text-xs px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-semibold border border-amber-500/30">Chất lượng món xôi cua</span>
+                        </div>
+                        <p class="text-xs text-slate-300 italic bg-slate-950/60 p-3 rounded-lg border border-slate-800">
+                            "Món xôi cua không ngon như QC, giá cả hơi đắt."
+                        </p>
+                        <div class="text-xs space-y-1 text-slate-300 bg-slate-800/40 p-3 rounded-lg border border-slate-700/50">
+                            <span class="font-bold text-amber-400">Nguyên nhân gốc rễ (RCA):</span> Quảng cáo hình ảnh xôi cua quá bắt mắt tạo kỳ vọng cao (High Expectation). Nếu xôi nguội hoặc thịt cua ít sẽ gây hụt hẫng.<br>
+                            <span class="font-bold text-emerald-400">Biện pháp khắc phục (SOP):</span> Bếp trưởng KCS lại độ dẻo của xôi nếp và định lượng thịt cua, giữ thố xôi nóng hổi khi bưng ra bàn.
+                        </div>
+                    </div>
+
+                    <!-- CASE 4 -->
+                    <div class="p-4 rounded-xl bg-slate-900/90 border border-rose-500/30 space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2 py-0.5 rounded bg-rose-500 text-slate-950 font-black text-xs">1 ★</span>
+                                <span class="font-bold text-sm text-white">Khách Recharge Kim</span>
+                                <span class="text-xs text-slate-500">2026-09</span>
+                            </div>
+                            <span class="text-xs px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 font-semibold border border-rose-500/30">So sánh chất lượng chi nhánh</span>
+                        </div>
+                        <p class="text-xs text-slate-300 italic bg-slate-950/60 p-3 rounded-lg border border-slate-800">
+                            "푸미흥에 있는 두개 지점은 여러번 방문했는데 이 지점은 이번이 처음. 같은 체인점인데 푸미흥에 비해 수준이 너무 떨어진다..."<br>
+                            <span class="text-slate-400 text-[11px]">Dịch: Tôi đã ăn ở 2 chi nhánh Phú Mỹ Hưng nhiều lần, đây là lần đầu ghé chi nhánh này. Cùng một chuỗi nhưng phục vụ ở đây kém hơn nhiều so với Phú Mỹ Hưng...</span>
+                        </p>
+                        <div class="text-xs space-y-1 text-slate-300 bg-slate-800/40 p-3 rounded-lg border border-slate-700/50">
+                            <span class="font-bold text-amber-400">Nguyên nhân gốc rễ (RCA):</span> Thiếu đồng bộ về tiêu chuẩn đào tạo nhân sự giữa các chi nhánh trung tâm và chi nhánh ngoại thành.<br>
+                            <span class="font-bold text-emerald-400">Biện pháp khắc phục (SOP):</span> Luân chuyển giám sát viên từ Phú Mỹ Hưng sang đào tạo lại kỹ năng phục vụ khách Hàn tại chi nhánh Quận 1.
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB CONTENT 4: STAFF HONOR BOARD -->
+        <div id="tabContent-staff" class="tab-pane hidden space-y-6">
+            <div class="glass-card rounded-2xl p-5 border border-amber-500/40 bg-gradient-to-b from-amber-950/20 to-slate-900/90">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-500/20 text-amber-400 text-xs font-bold border border-amber-500/40 mb-2">
+                            <span>🏆 BẢNG VÀNG THI ĐUA NỘI BỘ</span>
+                        </div>
+                        <h2 class="text-xl font-bold text-white">Top Nhân Viên Được Khách Quốc Tế & Bản Địa Khen Đích Danh</h2>
+                        <p class="text-xs text-slate-400 mt-1">Tổng cộng 80 lượt nhắc tên nhân viên trong 200 đánh giá (Tỷ lệ 40% - Đỉnh cao ngành F&B)</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- STAFF 1 -->
+                    <div class="p-4 rounded-xl bg-slate-900/90 border border-amber-500/40 space-y-3 relative overflow-hidden">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-full bg-amber-500/20 border-2 border-amber-400 flex items-center justify-center text-amber-300 text-xl font-bold">
+                                👑
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-base text-white">Bé Ngân</h4>
+                                <span class="text-xs text-amber-400 font-semibold">18 lượt khen đích danh</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-300 italic bg-slate-950/70 p-3 rounded-lg border border-slate-800">
+                            "Bé Ngân phục vụ rất chu đáo nhiệt tình hài lòng quý khách, ăn rất ngon giá cả phải chăng."<br>
+                            <span class="text-[10px] text-slate-500 font-semibold">— Khách Mạnh Trần Văn (5★)</span>
+                        </p>
+                        <div class="text-[11px] text-emerald-400 font-medium">
+                            ✓ Điểm mạnh: Niềm nở, chu đáo, tư vấn thực đơn hợp túi tiền.
+                        </div>
+                    </div>
+
+                    <!-- STAFF 2 -->
+                    <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-700/80 space-y-3 relative overflow-hidden">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-full bg-teal-500/20 border-2 border-teal-400 flex items-center justify-center text-teal-300 text-xl font-bold">
+                                🌟
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-base text-white">Bạn Nhiên</h4>
+                                <span class="text-xs text-teal-400 font-semibold">14 lượt khen đích danh</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-300 italic bg-slate-950/70 p-3 rounded-lg border border-slate-800">
+                            "Thức ăn ngon, phục vụ nhiệt tình (bạn Nhiên), không gian thoải mái phù hợp cho gia đình nhiều người."<br>
+                            <span class="text-[10px] text-slate-500 font-semibold">— Khách Hao Nguyen (5★)</span>
+                        </p>
+                        <div class="text-[11px] text-emerald-400 font-medium">
+                            ✓ Điểm mạnh: Chăm sóc bàn tiệc gia đình, tốc độ nhanh.
+                        </div>
+                    </div>
+
+                    <!-- STAFF 3 -->
+                    <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-700/80 space-y-3 relative overflow-hidden">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-full bg-purple-500/20 border-2 border-purple-400 flex items-center justify-center text-purple-300 text-xl font-bold">
+                                🌏
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-base text-white">Sylvia</h4>
+                                <span class="text-xs text-purple-400 font-semibold">12 lượt khen quốc tế</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-300 italic bg-slate-950/70 p-3 rounded-lg border border-slate-800">
+                            "The food was excellent!! Sylvia was very helpful in recommending the food that we enjoyed."<br>
+                            <span class="text-[10px] text-slate-500 font-semibold">— Khách Fhatu Mugeri (5★)</span>
+                        </p>
+                        <div class="text-[11px] text-emerald-400 font-medium">
+                            ✓ Điểm mạnh: Giao tiếp tiếng Anh lưu loát, tư vấn khách Tây.
+                        </div>
+                    </div>
+
+                    <!-- STAFF 4 -->
+                    <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-700/80 space-y-3 relative overflow-hidden">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-full bg-rose-500/20 border-2 border-rose-400 flex items-center justify-center text-rose-300 text-xl font-bold">
+                                🦀
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-base text-white">Thoa & Thủy</h4>
+                                <span class="text-xs text-rose-400 font-semibold">8 lượt khen hướng dẫn bóc sò</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-300 italic bg-slate-950/70 p-3 rounded-lg border border-slate-800">
+                            "We all struggled to open up our snails but the lovely lady helped us! Such a fun time!"<br>
+                            <span class="text-[10px] text-slate-500 font-semibold">— Khách Hellen Tran (5★)</span>
+                        </p>
+                        <div class="text-[11px] text-emerald-400 font-medium">
+                            ✓ Điểm mạnh: Bóc vỏ ốc tận bàn, tạo trải nghiệm WOW cảm xúc.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB CONTENT 5: COMPETITOR RADAR -->
+        <div id="tabContent-competitors" class="tab-pane hidden space-y-6">
+            <div class="glass-card rounded-2xl p-5 border border-slate-700/60">
+                <h3 class="text-base font-bold text-white mb-2 flex items-center gap-2">
+                    <span>⚔️</span>
+                    <span>Ma Trận So Sánh Điểm Mạnh / Điểm Yếu Đối Thủ (Competitor Intelligence)</span>
+                </h3>
+                <p class="text-xs text-slate-400 mb-6">Phân tích định vị thương hiệu giữa HSHG và 3 đối thủ lớn trong phân khúc hải sản TP.HCM</p>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="border-b border-slate-700 text-slate-400 bg-slate-900/50">
+                                <th class="p-3">Thương hiệu</th>
+                                <th class="p-3">Mô hình cốt lõi</th>
+                                <th class="p-3">Google Maps Rating</th>
+                                <th class="p-3">Giá King Crab</th>
+                                <th class="p-3">Chiến lược Cua</th>
+                                <th class="p-3">Điểm yếu truyền thông</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800 text-slate-300">
+                            <tr class="bg-amber-500/10 font-medium">
+                                <td class="p-3 text-amber-300 font-bold flex items-center gap-1.5">
+                                    <span>👑</span>
+                                    <span>Hải Sản Hoàng Gia</span>
+                                </td>
+                                <td class="p-3">Siêu thị Hải sản & Ăn tại chỗ cao cấp</td>
+                                <td class="p-3 text-emerald-400 font-bold">4.8 ★ (192 Lý Tự Trọng)</td>
+                                <td class="p-3 font-semibold text-white">3.499.000 đ/kg</td>
+                                <td class="p-3 text-emerald-300 font-semibold">Cua Không Dây (Buộc zip nhựa)</td>
+                                <td class="p-3 text-slate-400">Thời gian chế biến sống lâu (45p)</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold text-cyan-300">Đảo Hải Sản</td>
+                                <td class="p-3">Bán lẻ đa kênh & Shop-in-Shop siêu thị</td>
+                                <td class="p-3 text-slate-300">4.1 – 4.3 ★</td>
+                                <td class="p-3 text-slate-300">2.790.000 đ/kg</td>
+                                <td class="p-3 text-slate-400">Dây mỏng / Hàng ngộp đông lạnh</td>
+                                <td class="p-3 text-slate-400">Không có không gian ăn tại chỗ sang trọng</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold text-emerald-300">Hải Sản Rạn Biển</td>
+                                <td class="p-3">Đại nhà hàng tiếp khách doanh nghiệp</td>
+                                <td class="p-3 text-slate-300">4.2 – 4.4 ★</td>
+                                <td class="p-3 text-slate-300">3.200.000 đ/kg</td>
+                                <td class="p-3 text-slate-400">Phòng VIP cách âm, karaoke</td>
+                                <td class="p-3 text-slate-400">Chi phí cao, ít hiện diện trên TikTok</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold text-rose-300">Vua Cua</td>
+                                <td class="p-3">Casual Dining & Chế biến sẵn</td>
+                                <td class="p-3 text-slate-400">3.8 – 4.1 ★</td>
+                                <td class="p-3 text-slate-400">Theo thời giá</td>
+                                <td class="p-3 text-slate-400">Cua sốt đóng hộp</td>
+                                <td class="p-3 text-rose-400">Thu hẹp chi nhánh, ngừng bán sốt lẻ</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JAVASCRIPT LOGIC & REALTIME ENGINE -->
+    <script>
+        // EMBEDDED REAL REVIEW DATA
+        const rawReviews = [{"id": 1, "author": "Cuc Truong", "stars": 1, "text": "", "resp": "", "date": "2026-10-15", "likes": 0, "sentiment": "negative", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 2, "author": "Hao Nguyen", "stars": 5, "text": "Thức ăn ngon, phục vụ nhiệt tình (bạn Nhiên), không gian thoải mái phù hợp cho gia đình nhiều người", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-10-14", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": ["Bạn Nhiên"]}, {"id": 3, "author": "Mikielle Williams", "stars": 5, "text": "", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-10-11", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 4, "author": "ST Building Services", "stars": 5, "text": "So good", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-10-10", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 5, "author": "Mạnh Trần Văn", "stars": 5, "text": "Ăn rất ngon. Giá cả phải chăng. Bé Ngân phục vụ rất chu đáo nhiệt tình hài lòng quý khách", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-10-10", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": ["Bé Ngân"]}, {"id": 6, "author": "Fhatu Mugeri", "stars": 5, "text": "The food was excellent!! Sylvia was very helpful in recommending the food that we enjoyed.", "resp": "Thank you for appreciating Hai San Hoang Gia. We hope to continue receiving your trust and choice, making Hai San Hoang Gia your destination", "date": "2026-10-09", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": ["Sylvia"]}, {"id": 7, "author": "Premium Góc", "stars": 5, "text": "", "resp": "Thank you for appreciating Hai San Hoang Gia. We hope to continue receiving your trust and choice, making Hai San Hoang Gia your destination", "date": "2026-10-09", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 8, "author": "Jose Levita", "stars": 5, "text": "Muy bueno todo", "resp": "Thank you for appreciating Hai San Hoang Gia. We hope to continue receiving your trust and choice, making Hai San Hoang Gia your destination", "date": "2026-10-07", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 9, "author": "Phúc Phan", "stars": 5, "text": "Dịch vụ ổn, nhân viên nhiệt tình, đồ ăn ngon, có nhiều mức giá từ thấp tới cao, hải sản tươi sống tại chỗ, k khí vị trí ngồi thoải mái", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-10-07", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 10, "author": "Veronique Hill", "stars": 5, "text": "The staff were very lovely and great atmosphere. Fresh seafood that you can choose from. You can see all the seafood fresh while you eat. Thoa and Thuys were lovely.", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-10-05", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": ["Thoa", "Thủy"]}, {"id": 11, "author": "shikuan chen", "stars": 5, "text": "Nice fresh seafood.", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-10-05", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 12, "author": "Phúc Trần", "stars": 5, "text": "", "resp": "Rất cảm ơn Qúy khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-10-05", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 13, "author": "Nadia Refaat-Shaikh", "stars": 5, "text": "Very nice restaurant for all seafood.. highly recommended…", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-10-05", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 14, "author": "Phong Vu", "stars": 5, "text": "Nhân viên dễ thương,  tận tình", "resp": "Rất cảm ơn Qúy khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-10-05", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 15, "author": "Tram Vo", "stars": 3, "text": "Món xôi cua không ngon như QC, giá cả hơi đắt", "resp": "Hải Sản Hoàng Gia rất tiếc khi món Xôi Cua và mức giá chưa mang đến trải nghiệm như Quý khách kỳ vọng. Những góp ý của Quý khách, đặc biệt về chất lượng món ăn và hình ảnh quảng cáo, HSHG xin phép ghi nhận và trao đổi cùng đội ngũ để tiếp tục cải thiện. Cảm ơn Quý khách đã dành thời gian chia sẻ trải nghiệm.", "date": "2026-10-03", "likes": 0, "sentiment": "neutral", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 16, "author": "郑伟哲", "stars": 5, "text": "nice food", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-10-02", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 17, "author": "Алекс Зима", "stars": 5, "text": "Еда вкусная и сервис топ !", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-10-02", "likes": 0, "sentiment": "positive", "lang": "ru", "is_foreign": true, "staff": []}, {"id": 18, "author": "이용호", "stars": 1, "text": "음식 몇개 시키면 코스 요리 마냥 각각 10분은 가볍게 걸림 바쁘지도 않은데 일을 안함", "resp": "Dear Mr/Ms. 이용호,\n\nRoyal Seafood sincerely regrets that the waiting time for your dishes did not provide the experience you had hoped for. As we serve fresh seafood directly from our tanks, each dish requires preparation and cooking to order, with an estimated serving time of approximately 40–45 minutes.\n\nWe truly appreciate you taking the time to share your experience with us. Your feedback is valuable and helps us review and improve our service procedures, especially regarding the timing of dishes, so that we can provide a more thoughtful and enjoyable experience on your next visit.\n\nRoyal Seafood. also welcomes your feedback regarding our food and service quality via our hotline at 1900 0303 or email at cskh@haisanhoanggia.com. We are always happy to listen, learn, and continuously improve our service.\n\nBest regards,\nRoyal Seafood.", "date": "2026-10-02", "likes": 0, "sentiment": "negative", "lang": "ko", "is_foreign": true, "staff": []}, {"id": 19, "author": "Dubs", "stars": 5, "text": "", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-10-02", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 20, "author": "Hân Nguyễn", "stars": 3, "text": "Chúng tôi đến 7 người và chia thành 3 bill . Chúng tôi order 7 con ghẹ . 1 bill 2 con . 1 bill 2 con và 1 bill 3 con . Bạn phục vụ rất nềm nở hỏi chúng tôi ăn cay hay không cay. Chúng tôi order 1 phần không cay và còn lại đều ăn cay. Cuối cùng nhận lại được 1 tô ghẹ to bao gồm 7 con làm chung. ????  Cuối cùng tất cả là sauce không cay . Bạn tôi là người nước ngoài . Và tôi thông báo với họ quán này dịch vụ và đồ ăn rất tốt. Nhưng nhận lại thật sự quá thất vọng. Chưa kể về phần chia bill . Làm chung 7 con trong 1 tô rồi khi chia bill làm sao biết ai trả con to hay con nhỏ . Thêm 1 phần order thêm món. Các bạn quên order và không xin lỗi. Đáng lẽ khi order các bạn phải     Repeat the order , để không bị soát món", "resp": "Hải Sản Hoàng Gia thân chào Quý khách Hân Nguyễn,\n\nHải Sản Hoàng Gia thật sự rất tiếc vì lần dùng bữa này đã chưa mang lại trải nghiệm như Quý khách mong đợi, nhất là khi Quý khách đã tin tưởng giới thiệu Nhà hàng đến bạn bè.\n\nHải Sản Hoàng Gia đã kiểm tra lại và ghi nhận những thiếu sót trong quá trình phục vụ. Với 7 con ghẹ, Nhân viên đã chưa thực hiện việc tách thành 3 phần theo đúng mong muốn của Quý khách, gây bất tiện khi chia hóa đơn. Về phần xốt Singapore, hiện món chưa thể điều chỉnh độ cay theo từng mức độ, tuy nhiên Nhân viên cũng chưa hỗ trợ tách phần theo yêu cầu của Quý khách. Đây là điểm cần nghiêm túc rút kinh nghiệm.\n\nBên cạnh đó, việc Nhân viên chưa xác nhận lại đầy đủ các món sau khi Quý khách đặt đã dẫn đến việc sót món. Hải Sản Hoàng Gia xin lỗi Quý khách về sự bất tiện này và sẽ rà soát lại quy trình để Nhân viên luôn chủ động xác nhận lại món, số lượng và cách chia phần trước khi lên món.\n\nHiện Hải Sản Hoàng Gia có tổng đài góp ý và phản ánh về chất lượng sản phẩm, chất lượng dich vụ Hotline 1900 0303, hoặc email cskh@haisanhoanggia.com để Hải Sản Hoàng Gia có thể ghi nhận và hỗ trợ sớm nhất có thể.\n\nCảm ơn Quý khách đã góp ý, Hải Sản Hoàng Gia trân trọng những phản hồi này vì đây là cơ hội để Nhà hàng nhìn lại và cải thiện dịch vụ tốt hơn. Hy vọng Hải Sản Hoàng Gia sẽ có dịp được đón tiếp Quý khách lần nữa và mang đến một trải nghiệm chỉn chu hơn.\n\nTrân trọng,\nHải Sản Hoàng Gia", "date": "2026-10-01", "likes": 0, "sentiment": "neutral", "lang": "en", "is_foreign": true, "staff": []}, {"id": 21, "author": "Nguyễn Minh Trí", "stars": 5, "text": "Oke", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-10-01", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 22, "author": "Charles Lu", "stars": 5, "text": "The service was very good, she showed us how to open the clams. The food was delicious and the staff made the service seamless", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-09-30", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 23, "author": "Hellen Tran", "stars": 5, "text": "We all struggled to open up our snails but the lovely lady helped us! Such a fun time!", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-09-30", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 24, "author": "Trung Nhân", "stars": 5, "text": "Đồ ăn ngon, nhân viên nhiệt tình, không gian thoáng mát, sẽ ủng hộ thêm !", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-09-27", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 25, "author": "Tôm Lúa", "stars": 5, "text": "Lầu 1 có máy lạnh thoáng mát, cuối tuần nên đặt bàn trước, đồ ăn ngon giá ok nha,  bé nhân viên dễ thương nhiệt tình", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-09-27", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 26, "author": "Thu Huynh", "stars": 5, "text": "Đồ ăn ngon nhân viên  nhiệt tình", "resp": "Rất cảm ơn Qúy khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-09-26", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 27, "author": "Hannah Grables", "stars": 5, "text": "Great food. The fish are so fresh. Definitely recommend.", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-09-26", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 28, "author": "Fdemoni ibBitscka", "stars": 5, "text": "thanks you so much", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-09-26", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 29, "author": "Van Tran", "stars": 4, "text": "", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-09-25", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 30, "author": "Rina Angele Perez", "stars": 5, "text": "very nice food,  exact serving..", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-09-24", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 31, "author": "Hiromi Ohno", "stars": 5, "text": "Excellent ingredients, great hospitality, nice interior. Highly recommended!", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-09-24", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 32, "author": "hoài nam trần", "stars": 5, "text": "Rất tốt", "resp": "Rất cảm ơn Qúy khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-09-23", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 33, "author": "Nhi Võ", "stars": 5, "text": "", "resp": "Rất cảm ơn Qúy khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-09-23", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 34, "author": "David Hernandez", "stars": 5, "text": "easy spot to find, the food was well made and the service quick and fast, would highly recommend if you love seafood and eating out by the street!", "resp": "Thank you for appreciating Hai San Hoang Gia. We hope to continue receiving your trust and choice, making Hai San Hoang Gia your destination", "date": "2026-09-20", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 35, "author": "Ram Ilya", "stars": 3, "text": "Заказали лобстера и рыбу , ждали заказ +35 мин , затем подошла официантка и сказала что наш лобстер оказался пустым и предложили другой лобстер и сказали что придется ждать еще 20-30 минут , мы согласились и через 2 минуты нам принесли готовый лобстер а затем его забрали и через 5 мин принесли другой лобстер какой то остывший и несвежий , заказали 2 банки пиво и то не смогли нормально принести пришлось еще несколько раз напомнить", "resp": "We are truly sorry that your experience at Hai San Hoang Gia did not meet your expectations. We appreciate your feedback regarding the waiting time, service process, and food quality.\n\nHai San Hoang Gia is committed to serving fresh live seafood, which is kept in our tanks and swimming before being prepared. We have noted your feedback and will review it with our team to further improve our service quality.\n\nIf possible, please contact our Customer Service Hotline at 0906789543 and provide us with more details about your visit so that we can look into the matter further and assist you properly.\n\nThank you for taking the time to share your feedback with us.", "date": "2026-09-20", "likes": 0, "sentiment": "neutral", "lang": "ru", "is_foreign": true, "staff": []}, {"id": 36, "author": "Brian Memphis", "stars": 5, "text": "This is a really a little gem, great selection of seafood from Abalone to Red Alaska Crab.\nThe snail sauce ( duck egg sauce) was delicious- it’s well worth the visit", "resp": "Thank you for appreciating Hai San Hoang Gia. We hope to continue receiving your trust and choice, making Hai San Hoang Gia your destination", "date": "2026-09-17", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 37, "author": "Minh Luan Nguyen", "stars": 5, "text": "No words can describe how good the seafood is here! The combination hot pot and grouper sashimi were absolutely amazing. The staff will catch the fish and show it to you with the weight, and then you can choose how you want it prepared.\n\nThe combo I ordered was a 1.3 kg grouper, which was perfect for a group of three. Everything was fresh, flavorful, and delicious. I also ordered the seafood fried rice, which was another great choice.\n\nDefinitely a must-try if you love fresh seafood and want to experience choosing your own fish and how it’s prepared!", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-09-11", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 38, "author": "tram huynh", "stars": 5, "text": "Nhân viên dễ thương , phục vụ tốt, đồ ăn ngon , các món lẩu rất ngon 👍", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-09-06", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 39, "author": "Chris Chin", "stars": 5, "text": "매우친절한 직원", "resp": "Thank you for appreciating Hai San Hoang Gia. We hope to continue receiving your trust and choice, making Hai San Hoang Gia your destination", "date": "2026-09-05", "likes": 0, "sentiment": "positive", "lang": "ko", "is_foreign": true, "staff": []}, {"id": 40, "author": "Kraig Peel", "stars": 5, "text": "Great service and great food, highly recommend", "resp": "Thank you for appreciating Hai San Hoang Gia. We hope to continue receiving your trust and choice, making Hai San Hoang Gia your destination", "date": "2026-09-05", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 41, "author": "Tài Tấn", "stars": 5, "text": "Hải sản tươi ngon, xứng đáng với giá tiền. Nhiều loại , đa dạng dễ dàng chọn lựa. Chế biến cũng rất ngon, vừa miệng. Do mình đi cuối tuần hơi đông nên lên món có bị chậm, mong nhà hàng có thể cải thiện thêm về điểm này. Bù lại là các bạn nhân viên phục vụ rất dễ thương, hỗ trợ nhiệt tình.", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-09-05", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 42, "author": "BaoNga Tran", "stars": 5, "text": "Đò ăn ngon, nhân viên tên Thoa dễ thương!", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-09-03", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": ["Thoa"]}, {"id": 43, "author": "Ngọc Thảo Vy Vũ", "stars": 5, "text": "Như pv OK", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-09-02", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 44, "author": "Danh Nguyễn Chí", "stars": 5, "text": "Như pv rất ok nha kakakka", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-09-02", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 45, "author": "Tuấn Trần", "stars": 5, "text": "Bạn như với bạn tiên phục vụ rất tốt ạ", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-09-02", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 46, "author": "Hồ Minh Đức", "stars": 5, "text": "Như giỏi", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-09-02", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 47, "author": "배현홍", "stars": 5, "text": "", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-09-02", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 48, "author": "Thoài Trương", "stars": 5, "text": "Đồ ăn ngon lắm nhé, giá cả hợp lý so với chất lượng ổn lắm luôn", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-09-02", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 49, "author": "053_ Nguyễn Thanh Ngân", "stars": 5, "text": "đồ ăn tươi ngon lắm nha, hợp khẩu vị, giá cả xứng đáng với chất lượng", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-09-02", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 50, "author": "蘇新", "stars": 5, "text": "", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-09-02", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 51, "author": "L C", "stars": 5, "text": "東西很新鮮，很好吃", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-09-02", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 52, "author": "Jookyum Kim", "stars": 5, "text": "맛있어요", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-09-02", "likes": 0, "sentiment": "positive", "lang": "ko", "is_foreign": true, "staff": []}, {"id": 53, "author": "황준식", "stars": 5, "text": "최고의\n음식점 강추강추 합니다", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-09-02", "likes": 0, "sentiment": "positive", "lang": "ko", "is_foreign": true, "staff": []}, {"id": 54, "author": "정진국", "stars": 5, "text": "음식도 맛있고 서비스도 좋음", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-09-02", "likes": 0, "sentiment": "positive", "lang": "ko", "is_foreign": true, "staff": []}, {"id": 55, "author": "김채성", "stars": 5, "text": "너무 맛있고 서비스도 좋네요~~", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-09-02", "likes": 0, "sentiment": "positive", "lang": "ko", "is_foreign": true, "staff": []}, {"id": 56, "author": "Jeong Yonghoon (코코파파)", "stars": 5, "text": "너무너무 맛있어요!!! 꼭 오세요!! 또오세요!!", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-09-02", "likes": 0, "sentiment": "positive", "lang": "ko", "is_foreign": true, "staff": []}, {"id": 57, "author": "Chloe Hsiao", "stars": 5, "text": "", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-09-02", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 58, "author": "Katherine Yang", "stars": 5, "text": "", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-09-02", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 59, "author": "Diệp Nông", "stars": 5, "text": "Hương- Dorish phục vụ nhiệt tình", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-09-02", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 60, "author": "Pinkie", "stars": 5, "text": "Ánh and Thoa were the sweetest girls ever and made our experience here wonderful!! The food was delicious and definitely worth the money. The service was a 10/10, they literally cut open the king crab for us. If you want to experience luxury for a day in Vietnam at half the price of Western countries I would definitely recommend coming here. We had the grilled scollop and steamed kind crab. Absolutely phenomenal!! Thank youuuu 💞", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-09-02", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": ["Thoa"]}, {"id": 61, "author": "Fiona Chan", "stars": 5, "text": "Very nice seafood and comfortable restaurant, good service by staff Amy. Recommended!", "resp": "Thank you for appreciating Hai San Hoang Gia. We hope to continue receiving your trust and choice, making Hai San Hoang Gia your destination", "date": "2026-08-29", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 62, "author": "Hà Trang Lý", "stars": 5, "text": "Hương (Dorish) phục vụ tận tình quá trời quá đất 💚\nĐồ ăn tươi ngon", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-08-27", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 63, "author": "44. Trương Minh Vy", "stars": 5, "text": "hải sản tươi ngon, không gian rộng rãi sang trọng", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-08-26", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 64, "author": "birkan engin", "stars": 5, "text": "", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-08-26", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 65, "author": "Tuan Richard", "stars": 5, "text": "J’ai essayé ce restaurant plus de deux fois, de PMH au centre ville ( sur cet endroit ). C’est la nouvelle chaine de restaurant offrant particulièrement les fruits de mer. Le goût est local et bon à manger. Les fruits de mer sont frais la plupart de temps. Le service est assez bon. La décoration est neuve et maritime. Le prix est peu élevé, mais acceptable en matière de sa place d’or au centre-ville. Un restaurant devrait être dans la liste des visites.", "resp": "Thank you for appreciating Hai San Hoang Gia. We hope to continue receiving your trust and choice, making Hai San Hoang Gia your destination", "date": "2026-08-26", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 66, "author": "Danh Tran", "stars": 5, "text": "Good food,   Tien Tenzing gave an outstanding service and friendly smile.", "resp": "Thank you for appreciating Hai San Hoang Gia. We hope to continue receiving your trust and choice, making Hai San Hoang Gia your destination", "date": "2026-08-25", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 67, "author": "Luận Nguyễn", "stars": 5, "text": "Điểm cộng vì đồ ăn chế biến ngon nhan viên rất nhiệt tình thân tiện dễ thương", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-08-25", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 68, "author": "Thinh Nguyen", "stars": 5, "text": "Quán đồ ăn ngon, nhân viên nhiệt tình dễ thương!", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-08-25", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 69, "author": "Vy Thảo", "stars": 5, "text": "Không gian thoáng mát, sang trọng, đồ ăn đẹp mắt, ngon miệng", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-08-25", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 70, "author": "Robbie Graham", "stars": 5, "text": "Tommy, Chloe and Miles looked after us and made sure we were welcome and helped ordered some of the best fish food we've eaten. If in the area, come and make sure you visit and have a feed, cant recommend enough.", "resp": "Thank you for appreciating Hai San Hoang Gia. We hope to continue receiving your trust and choice, making Hai San Hoang Gia your destination", "date": "2026-08-24", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 71, "author": "Emilio Peña García", "stars": 5, "text": "Muchas gracias a Tommy por su atención, el sitio es un espectáculo\n\nTe pesan lo que eliges y te muestran la foto con báscula y todo\n\nLa comida muy bien hecha\n\nPor cierto, los noodles para mí hijo de marisco estaban de muerte y solo valen 189000 vnd.", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-08-24", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 72, "author": "Nazerethh Tekeste", "stars": 5, "text": "Chloe friendly.  Restaurant good", "resp": "Thank you for appreciating Hai San Hoang Gia. We hope to continue receiving your trust and choice, making Hai San Hoang Gia your destination", "date": "2026-08-24", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 73, "author": "Me Near", "stars": 1, "text": "We ordered one serving of morning glory and one fish dish recommended by the staff. The morning glory was fine, but the fish was extremely disappointing and almost impossible to eat.\n\nWe originally asked for a 1 kg fish, but the restaurant served us a 1.3 kg fish without informing us or asking for our approval. The bill came to over 2.5 million VND. The fish alone cost nearly 1.6 million VND per kilogram, making it incredibly expensive for the quality.\n\nOur very first night in Ho Chi Minh City was completely ruined by this experience.\n\nI understand that every restaurant needs to make a profit, but it is not acceptable to push overpriced, poor-quality dishes onto customers. Foreign tourists don’t have unlimited money either.\n\nI would strongly recommend avoiding this seafood restaurant. There are many excellent seafood restaurants in Vietnam where you can enjoy a great meal for 300,000–500,000 VND per person. Don’t waste your money here.", "resp": "Dear Me Near,\n\nWe are truly sorry to hear that your experience did not meet your expectations. As our seafood is naturally sourced and served fresh, the weight of each item is not fixed and may vary depending on each delivery. Our staff will select and weigh the available seafood with the closest weight to the customer’s request.\n\nWe sincerely appreciate your feedback and will take it into consideration to improve our service and customer experience. Thank you for sharing your comments with us.", "date": "2026-08-24", "likes": 0, "sentiment": "negative", "lang": "en", "is_foreign": true, "staff": []}, {"id": 74, "author": "Truc Nguyen", "stars": 5, "text": "Tuyệt vời", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-08-23", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 75, "author": "Minh Lê Thụy Cao", "stars": 5, "text": "Không gian thoáng sạch sẽ , hải sản tươi , đồ ăn ngon , thoải mái , nhân viên thân thiện , nhiệt tình . Đi gia đình hoặc nhóm đông nên đặt bàn trước để quán phục vụ tốt hơn", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-08-23", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 76, "author": "Thái Hoàng My", "stars": 5, "text": "Không gian thoáng sạch sẽ, đồ ăn tươi ngonn", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-08-23", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 77, "author": "Low Wai Kong", "stars": 1, "text": "Horrible restaurant. Simple change package and cheat us on the package pricing. 10℅+8℅ tax. The manager simply show me yesterday receipt which doesn't means anything to me. He said could be wrongly showed but we showed the picture and package with price before our order.\nChili source not bad.\nOverall review, not happy, no next time.", "resp": "Dear Guest,\n\nWe’re sorry to hear that your experience did not meet your expectations. Regarding the taxes, in accordance with Vietnamese regulations, VAT is applied at 8% for food items and 10% for beverages and cold towels.\n\nWe appreciate your feedback and will take it into consideration as we continue to improve our service and provide clearer information to our guests.\n\nThank you for sharing your feedback with us.", "date": "2026-08-22", "likes": 1, "sentiment": "negative", "lang": "en", "is_foreign": true, "staff": []}, {"id": 78, "author": "SAMU", "stars": 4, "text": "​水槽から新鮮な海鮮を選んでその場で調理してもらえるレストランです。今回はエビ、カニ、ロブスターといった大物（高級食材）は注文しませんでしたが、全体的に値段も比較的手頃で、気軽に利用しやすいお店だと感じました。\n​頼んだ料理の中で特に美味しかったのが「アサリの蒸し物」と「海鮮焼きそば」です！\nアサリはレモングラスの良い香りが効いており、身が大きくてプリプリで最高でした。海鮮焼きそばは東南アジアでおなじみのインスタント麺を使ったスタイルですが、味付けが非常に良く、イカやエビなどの海鮮がゴロゴロ入っていて大満足です。\n​（貝のバターガーリック炒めとタマリンドソース炒めは個人的には普通だったので、次回は別のものを頼むかもしれません。他に空芯菜の炒め物や揚げ春巻きもいただきました）\n​また、お店の造りとして1階はローカルな活気を感じるオープンエアですが、2階にはクーラー完備の涼しい部屋があります。ベトナムの暑さを避けて、涼しい環境で快適にゆっくりと食事ができるので、2階席が絶対におすすめです！", "resp": "Thank you for appreciating Hai San Hoang Gia. We hope to continue receiving your trust and choice, making Hai San Hoang Gia your destination", "date": "2026-08-22", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 79, "author": "N.B Pham", "stars": 5, "text": "Nhà hàng vs Hải sản luôn tươi sống. Ko gian ấm cúng", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-08-18", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 80, "author": "Alyssa Gawaran", "stars": 5, "text": "The food are great, especially their service, it’s spectacular! Also, shoutout to Chloe, she is very nice and accommodating!", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-08-17", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 81, "author": "Amy Phan", "stars": 5, "text": "", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-08-17", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 82, "author": "Sang Losbter", "stars": 5, "text": "Good", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-08-17", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 83, "author": "Nhi Tran", "stars": 5, "text": "Ngon nha", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-08-16", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 84, "author": "Nguyễn Cường", "stars": 5, "text": "Good", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-08-16", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 85, "author": "Thoa", "stars": 5, "text": "Quán rộng rãi, đi nhóm đông vẫn thoải mái nha. Có khu outside bên dưới và phòng lạnh trên lầu. Hải sản tươi, gia đình mình được tự lựa trực tiếp, bao ốp 1 đổi 1 nên khá yên tâm nè. Món ổn, giá mình thấy khá hợp lý so với chất lượng. Đi ăn cùng bạn bè hay gia đình đều okela, mọi người nên đặt bàn trước để có thêm ưu đãi nha và vì tối thứ 6 7 khá đông 😋", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-08-16", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 86, "author": "NHI Trần Thanh", "stars": 5, "text": "Dịch vụ tốt hải sản tươi", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-08-16", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 87, "author": "정민주", "stars": 5, "text": "음식점 맛있구 넓고 쾌적해요!\nthao nhien chloe 매우 친절해요!", "resp": "Thank you for appreciating Hai San Hoang Gia. We hope to continue receiving your trust and choice, making Hai San Hoang Gia your destination", "date": "2026-08-15", "likes": 0, "sentiment": "positive", "lang": "ko", "is_foreign": true, "staff": ["Bạn Nhiên"]}, {"id": 88, "author": "The Du Tran", "stars": 5, "text": "hải sản tươi, ngon", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-08-14", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 89, "author": "Thu Phan", "stars": 5, "text": "", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-08-13", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 90, "author": "Thương Ngô", "stars": 1, "text": "Mình bị mất túi ngay trong khuôn viên quán. Sau khi phát hiện, mình có nhờ quán hỗ trợ kiểm tra camera để tìm lại tài sản. Tuy nhiên, quán xử lý và kiểm tra camera khá lâu, khiến mình phải chờ đợi và rất sốt ruột.\n\nĐiều khiến mình thất vọng hơn là sau sự việc, phía quán cũng không có một lời xin lỗi hay chia sẻ với khách hàng. Mình hiểu tài sản cá nhân mỗi người cần tự bảo quản, nhưng khi sự việc xảy ra ngay trong khuôn viên quán, mình mong quán có cách xử lý nhanh chóng và chuyên nghiệp hơn.\n\nMong quán xem lại cách tiếp nhận và hỗ trợ khách hàng trong những trường hợp tương tự. Trải nghiệm lần này thực sự không tốt nên mình chỉ có thể đánh giá 1 sao.", "resp": "Chị Thương Ngô thân mến,\n\nTrước hết, Hải Sản Hoàng Gia chân thành gửi lời xin lỗi đến Chị về sự cố đáng tiếc mà Chị đã gặp phải trong trải nghiệm buổi ăn vừa qua.\n\nSau khi tiếp nhận thông tin từ Chị, Nhà hàng đã phối hợp trích xuất camera để hỗ trợ tìm hiểu sự việc. Đồng thời, Giám sát Nhà hàng cũng đã trực tiếp đi cùng Chị đến cơ quan Công an để trình báo và hỗ trợ làm việc cho đến khi hoàn tất. Tuy nhiên, Hải Sản Hoàng Gia cũng chân thành ghi nhận góp ý từ Chị rằng trong quá trình hỗ trợ và cách giao tiếp với Chị tại thời điểm đó có thể chưa thực sự mang lại cảm giác yên tâm và thể hiện được sự quan tâm như mong đợi.\n\nHải Sản Hoàng Gia rất tiếc vì điều này và sẽ nghiêm túc tiếp thu nội dung phản ánh từ Chị cũng như đào tạo lại Nhân sự về cách chủ động cập nhật, chia sẻ với khách hàng trong những tình huống tương tự.\n\nMột lần nữa, Nhà hàng chân thành xin lỗi Chị về trải nghiệm chưa tốt lần này và cảm ơn Chị đã góp ý để Hải Sản Hoàng Gia có cơ hội cải thiện chất lượng phục vụ. Trong trường hợp cần hỗ trợ bất cứ thông tin  gì khác, Chị vui lòng liên hệ Hotline 1900 0303 hoặc email cskh@haisanhoanggia.com để Hải Sản Hoàng Gia có thể ghi nhận và hỗ trợ Chị sớm nhất ạ.\n\nTrân trọng,\nHải Sản Hoàng Gia", "date": "2026-08-13", "likes": 0, "sentiment": "negative", "lang": "vi", "is_foreign": false, "staff": ["Bạn Nhiên"]}, {"id": 91, "author": "Recharge Kim", "stars": 1, "text": "푸미흥에 있는 두개 지점은 여러번 방문했는데 이 지점은 이번이 처음.   같은 체인점인데 푸미흥에 있는 다른 지점들에 비해 수준이 너무 떨어진다. 직원은 여러번 불러야 오고 소스나 잔이나 미리 챙겨주는게 없다. 삿뽀로 생맥은 오래된듯 김빠지고맛없고 전복사시미는 하얗게 변색된게 생물을 준게 아니라 냉장 숙성된걸 준 모양이고 비린내가 나서 못먹었다.  다른곳에선 한마리 70k~90k하는 가리비구이가 세마리 540k 가격 미쳤다. 황자 이름을 달고 이리 장사하다니...ㅉㅉ", "resp": "Dear Mr. Recharge Kim,\n\nThank you for choosing Royal Seafood.. First and foremost, we sincerely apologize for the disappointing experience you encountered during your recent visit. We truly appreciate your feedback and will continue to make every effort to improve our service quality.\n\nRegarding the Australian abalone, its meat is naturally white, which differs from Korean abalone, whose meat typically has a more yellowish color. We would also like to assure you that Royal Seafood is committed to using fresh, live seafood for preparation and serving.\n\nRegarding the Sapporo beer, after receiving your feedback, our staff promptly replaced the beer with a new serving. However, we sincerely regret that the taste still did not meet your expectations or suit your personal preference. We will also forward your feedback to our beverage partner for further review and improvement.\n\nOnce again, we sincerely apologize for the experience not meeting your expectations. We truly appreciate your feedback and hope to have the opportunity to welcome you again and provide you with a much better experience in the future.\n\nShould you require any further assistance, please feel free to contact us via our Hotline at 1900 0303 or email us at cskh@haisanhoanggia.com. Our Customer Service team will be happy to assist you at the earliest convenience.\n\nSincerely,\nRoyal Seafood.", "date": "2026-08-13", "likes": 0, "sentiment": "negative", "lang": "ko", "is_foreign": true, "staff": []}, {"id": 92, "author": "Jesus Miguel Suntay", "stars": 5, "text": "Good food and service!", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-08-12", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 93, "author": "Toby Lim", "stars": 4, "text": "Seafoods are very fresh. Butter snails, 2 chilli crab 🦀, 3 mantis prawns, 6 grilled oysters. Oysters are big, butter snails is big and chewy, no funny taste. Mantis prawn and crab meaty. Basically enjoy this meal. For 3 person and it’s more than enough.", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-08-11", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 94, "author": "khoh kean haur", "stars": 5, "text": "", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-08-09", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 95, "author": "Tú Anh", "stars": 5, "text": "Chị nhân viên Như nhiệt tình, dễ thương, chu đáo", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-08-09", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 96, "author": "Wong Han Yee", "stars": 5, "text": "Nice food and atmosphere", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-08-08", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 97, "author": "Dinh Diep Bui", "stars": 5, "text": "", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-08-08", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 98, "author": "Trung Bùi", "stars": 5, "text": "Good", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-08-06", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 99, "author": "소유리", "stars": 5, "text": "", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-08-04", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 100, "author": "안녕하세요전안녕해요", "stars": 5, "text": "매장이쾌적하고 해산물이 신선했어요 까기 힘든 새우를 직원이 다 까줘서 너무 고마웠어요. 다양하게 먹었습니다.", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-08-02", "likes": 0, "sentiment": "positive", "lang": "ko", "is_foreign": true, "staff": []}, {"id": 101, "author": "Loan Nguyễn", "stars": 5, "text": "Trải nghiệm hải sản tươi sống món ăn ngon, bạn nhân viên teddy phục vụ rất tốt", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-08-01", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 102, "author": "Gary Ng", "stars": 5, "text": "It’s a good place for gathering and celebration. The seafood is fresh and delicious taste with their way of seasoning. Service is excellent and the place is cooling with air conditioning at level 2. Love everything about here and will visit again. Service crew are very friendly and responsive. Kha.", "resp": "Thank you for appreciating Hai San Hoang Gia. We hope to continue receiving your trust and choice, making Hai San Hoang Gia your destination", "date": "2026-07-31", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 103, "author": "Hai Quang Huynh", "stars": 5, "text": "Kha dễ thương", "resp": "Thank you for appreciating Hai San Hoang Gia. We hope to continue receiving your trust and choice, making Hai San Hoang Gia your destination", "date": "2026-07-31", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 104, "author": "อัศวิน อุยสีรักษ์", "stars": 5, "text": "Good food, service Chloe so good", "resp": "Thank you for appreciating Hai San Hoang Gia. We hope to continue receiving your trust and choice, making Hai San Hoang Gia your destination", "date": "2026-07-31", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 105, "author": "Nouhin Junthavong", "stars": 5, "text": "Huong Doris so goodd", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-07-30", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 106, "author": "Phuc Nguyen", "stars": 5, "text": "Good food, well service. Fast action\nThank you Nhien & Tien", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-07-30", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": ["Bạn Nhiên"]}, {"id": 107, "author": "Thanh Hằng Nguyễn Phạm", "stars": 5, "text": "Hương- Dorish phục vụ nhiệt tình\nKhông gian thoải mái", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-07-30", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 108, "author": "Khương Nguyễn", "stars": 5, "text": "", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-29", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 109, "author": "Thanh Tri Ngo", "stars": 5, "text": "", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-07-25", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 110, "author": "Nguyễn Minh Thắng", "stars": 5, "text": "", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-07-23", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 111, "author": "jin fang", "stars": 2, "text": "", "resp": "Royal Seafood sincerely regrets that your experience did not meet your expectations.\nRoyal Seafood has Customer Service Hotline 0906789543 to call feedback about the quality of our products and service. We look forward to receiving your feedback so that We can assist in handling the problem. Because on this platform, it is not convenient for Royal Seafood to ask for your contact information.\nBest regards.", "date": "2026-07-20", "likes": 0, "sentiment": "negative", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 112, "author": "Nhi Thai", "stars": 5, "text": "Phòng VIP sạch sẽ. Đồ ăn ngon. Ngân phục vụ vui vẻ", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-18", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": ["Bé Ngân"]}, {"id": 113, "author": "Van Dinh", "stars": 5, "text": "Phòng VIP sạch sẽ. Ngân phục vụ nhiệt tình", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-18", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": ["Bé Ngân"]}, {"id": 114, "author": "Eddie Chen", "stars": 4, "text": "", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-15", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 115, "author": "Inès IBH", "stars": 5, "text": "Fantastic experience!\nWe were welcomed with a warm, friendly smile by Nemo, who went above and beyond to guide us through the menu and help us choose the perfect dishes. Excellent service and great energy. Thank you, Nemo!", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-07-15", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 116, "author": "Emir Namous", "stars": 5, "text": "Thank you nemo good service", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-07-15", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 117, "author": "Siham Namous", "stars": 5, "text": "Thank you Nemo", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-07-15", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 118, "author": "redha namous", "stars": 5, "text": "Thank you Nemo for the service , so kind and responsive. Thank again for being an excellent host!", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-07-15", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 119, "author": "Khalil Namous", "stars": 5, "text": "thank you nimo", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-07-15", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 120, "author": "Tiền Trần", "stars": 5, "text": "Nhân viên Như và Kha rất nhiệt tình", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-15", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 121, "author": "Tiền Trần", "stars": 5, "text": "Nhân viên Kha và Như rất dễ thương", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-15", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 122, "author": "Duỷen Trần", "stars": 5, "text": "Nhân vieên Kha vui vẻ nhiệt tình", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-15", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 123, "author": "HyeEun NamKoong", "stars": 5, "text": "", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-15", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 124, "author": "Van Truong", "stars": 5, "text": "bạn như pv : tốt nha", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-15", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 125, "author": "GODGAMBLER", "stars": 5, "text": "신선하고 맛있었어요~\nNEMO 직원 친절합니다.", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-07-15", "likes": 0, "sentiment": "positive", "lang": "ko", "is_foreign": true, "staff": []}, {"id": 126, "author": "구일창", "stars": 5, "text": "손질하기 힘든 음식들을\n직원들이 직접 발라주고\n응대할때의 계속 미소짓는 모습이 너무 좋았습니다\nNemo", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-07-15", "likes": 0, "sentiment": "positive", "lang": "ko", "is_foreign": true, "staff": []}, {"id": 127, "author": "Khải Lê", "stars": 5, "text": "Bạn Kha phục vụ nhiệt tình, dễ thương", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-14", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 128, "author": "Kirsten Dickison", "stars": 5, "text": "Wonderful restaurant. Catch your own seafood. Fabulous staff Nemo", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-07-14", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 129, "author": "Darren Butterick", "stars": 5, "text": "Nemo- Windy very helpful", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-07-14", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 130, "author": "Quan Nguyen Vu Tien", "stars": 5, "text": "Hải sản tươi ngon, không gian rộng rải. Bạn Như phục vụ tốt", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-14", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 131, "author": "hưng đỗ", "stars": 5, "text": "Ban nhu ok lam", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-14", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 132, "author": "Kathy", "stars": 5, "text": "Như pv dễ thương lắm nha", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-14", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 133, "author": "영", "stars": 5, "text": "They deboned all the meat for us, which made the meal so much more enjoyable. Everything was delicious—from the sauces to the noodles. There wasn’t a single dish we didn’t love! A special thanks to Nemo, who was incredibly kind and attentive throughout our visit. We had a wonderful dining experience and would definitely come back!", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-07-14", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 134, "author": "Giang Thanh", "stars": 5, "text": "Như pv : view đẹp, thức ăn tuoi ngon, phục vụ tận tình", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-14", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 135, "author": "Huong Truong", "stars": 5, "text": "Như pv rất nhiệt tình, dễ thương", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-14", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 136, "author": "thi huyen tran Mai", "stars": 5, "text": "", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-13", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 137, "author": "Lieu Phan", "stars": 5, "text": "Vị trí đẹp,đồ ăn ngon, nhân viên nhiệt tình,chủ đáo.", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-12", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 138, "author": "Mint", "stars": 5, "text": "Quán tuy đông và không nhiều nv phục vụ như nhà hàng khác nhưng có take care khách tốt. Thời gian lên món cũng không quá lâu. Hải sản tuy một phần ít nhưng rất to và chất lượng. Anh nhân viên Kha dễ thương lắm nha", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-07-12", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 139, "author": "Hồ Liên", "stars": 5, "text": "Nhân viên Kha oke, dễ thương", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-12", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 140, "author": "Huỳnh Như Vũ", "stars": 5, "text": "Bạn Kha cười tươi, rất nhiệt tình", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-12", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 141, "author": "Chí Tâm Lê", "stars": 5, "text": "Bạn Kha rất dễ thương và nhiệt tình", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-12", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 142, "author": "Char Char", "stars": 5, "text": "Definitely fabulous seafood feast, everyone is satisfied! Even the fried rice was great!!! Will come again, Nemo thank you so much for your great service! Best 🌟", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-07-11", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 143, "author": "CÔNG TY TNHH HIẾU THẢO", "stars": 5, "text": "Nhân viên Kha dễ thương rất nhiệt tình.", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-11", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 144, "author": "睿涵", "stars": 5, "text": "很新鮮好吃！！", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-07-11", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 145, "author": "조성우", "stars": 5, "text": "새로 생긴 곳 같은데 아주 시설이 쾌적하고 음식도 맛있어요", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-07-11", "likes": 0, "sentiment": "positive", "lang": "ko", "is_foreign": true, "staff": []}, {"id": 146, "author": "Kyung Ho Kim", "stars": 5, "text": "best seafood place in HCM city", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-07-11", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 147, "author": "JC Choi", "stars": 5, "text": "Nhu pv ok", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-11", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 148, "author": "김지원", "stars": 5, "text": "", "resp": "Thank you for appreciating Hai San Hoang Gia. We hope to continue receiving your trust and choice, making Hai San Hoang Gia your destination", "date": "2026-07-10", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 149, "author": "Thanh Kim Doan", "stars": 5, "text": "Nemo rất vui vẻ nhiệt tình", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-09", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 150, "author": "Huong Le", "stars": 5, "text": "Bạn nhân viên Kha rất dễ thương, take care khách rất chu đáo", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-09", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 151, "author": "Ngọc Thuỷ", "stars": 5, "text": "Nv Kha phục vụ vui vẻ nhiệt tình", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-09", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 152, "author": "松田幸卓", "stars": 5, "text": "sylvia\ngood", "resp": "Thank you for appreciating Royal Seafood", "date": "2026-07-07", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": ["Sylvia"]}, {"id": 153, "author": "Yugo Ichikawa", "stars": 5, "text": "Sylvia〜Good", "resp": "Thank you for appreciating Royal Seafood", "date": "2026-07-07", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": ["Sylvia"]}, {"id": 154, "author": "猿渡健一郎", "stars": 5, "text": "sylvia\ngood", "resp": "Thank you for appreciating Royal Seafood", "date": "2026-07-07", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": ["Sylvia"]}, {"id": 155, "author": "Tam K", "stars": 5, "text": "Ngân phục vụ tốt\nMón ăn ngon", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-07", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": ["Bé Ngân"]}, {"id": 156, "author": "Thu Hoàng", "stars": 5, "text": "Tôm tươi. Nhân viên Nhiên hỗ trợ lột tôm và phục vụ nhiệt tình", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-07-07", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": ["Bạn Nhiên"]}, {"id": 157, "author": "Đức Huy Phạm", "stars": 5, "text": "đồ ăn ngon. Không gian rộng. Nhân viên Nhiên nhiệt tình phục vụ", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-07", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": ["Bạn Nhiên"]}, {"id": 158, "author": "My Lan Huynh", "stars": 5, "text": "Nv Kha pvu vui vẻ, nhiệt tình", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-06", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 159, "author": "han le", "stars": 5, "text": "Nemo really nice, thank you so much", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-07-06", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 160, "author": "青俊", "stars": 5, "text": "Quán sạch sẽ sang trọng , đồ ăn ngon , bạn vy pv tốt lắm lun thích bạn này nhất", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-05", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 161, "author": "Trần Thị Phương Linh", "stars": 5, "text": "Hs tươi sống lựa ngay trong hồ , chế biến ngon , b Vy pv tận tình", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-05", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 162, "author": "Diệu Huỳnh", "stars": 5, "text": "Hải sản ngon,bé Thảo Vy PV nhiệt tình tốt 10đ", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-05", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 163, "author": "Thùy Trang", "stars": 5, "text": "Đồ ăn ngon, giá cả hợp lí, bạn Vy dễ thương nhiệt tình.", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-05", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 164, "author": "Ngoc Bao", "stars": 5, "text": "Như pv ok lắm đồ ăn siu ngon hấp dẫn", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-05", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 165, "author": "Hoang Minh Kien", "stars": 5, "text": "Như  OK lăm siu nhiệt tình", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-05", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 166, "author": "Thien Van Hoang", "stars": 5, "text": "Như good", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-05", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 167, "author": "Nguyen Thanh", "stars": 5, "text": "Như pv ok,  ngon chất lượng", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-05", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 168, "author": "Khanh Tran", "stars": 5, "text": "Như pv tốt đồ ăn ngon", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-05", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 169, "author": "J mohammed", "stars": 5, "text": "this is 5 star place for seafood with reasonable prices, the lobster can be a bit expensive though", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-07-05", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 170, "author": "Ornchulee Wisitthadakul", "stars": 5, "text": "Delicious food good price especially staff name Nemo!!", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-07-04", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 171, "author": "Lee Kelvin", "stars": 5, "text": "", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-07-04", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 172, "author": "Hương Trầm", "stars": 5, "text": "Hải sản ở đây rất tươi sống, giá cả tốt, chế biến ngon, nhân viên Olaf tuyệt vời! sẽ ghé lại khi có dịp", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-04", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 173, "author": "kamonwan Nomnoo", "stars": 5, "text": "Good food. So fresh and good service from nemo ! Definitely come back", "resp": "Thank you for appreciating Royal Seafood.", "date": "2026-07-04", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 174, "author": "Yame Shin", "stars": 5, "text": "Tommy nhiệt tình", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-04", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 175, "author": "Thùy Trình Nhật", "stars": 5, "text": "Tommy phục vụ tận tình. Hải sản tươi roi rói, tôm nhảy đành đạch, cá bơi tung tăng...Ăn tại chỗ bếp làm ngon lắm lun nha", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-04", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 176, "author": "Anh Phạm", "stars": 5, "text": "Tommy nhiệt tình , đồ ăn tươi ngon, nhà hàng sạch sẽ", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-04", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 177, "author": "Hân Châu", "stars": 5, "text": "Tommy tốt bụng", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-04", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 178, "author": "vyvy1636", "stars": 5, "text": "Đồ ăn mang ra nhanh chóng, anh phục vụ Tommy thân thiện, hòa đồng.", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-04", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 179, "author": "Quyên Trần", "stars": 5, "text": "Tommy", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-04", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 180, "author": "Lanh Tran", "stars": 5, "text": "Tommy", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-04", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 181, "author": "Trần Lê Thảo Trân", "stars": 5, "text": "Tommy", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến.", "date": "2026-07-04", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 182, "author": "Toan Tran", "stars": 5, "text": "Good.\nThảo Nhiên excellent!", "resp": "ất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-07-03", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": ["Bạn Nhiên"]}, {"id": 183, "author": "Nhi Thanh", "stars": 5, "text": "Hải sản tươi , không gian thoáng đãng rộng rãi , nhân viên thân thiện , bạn Thảo Vy", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-07-03", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 184, "author": "tai Tan", "stars": 5, "text": "Đồ ăn ngon , dịch vụ tuyệt vời\n, bạn Vy pv tốt", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-07-03", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 185, "author": "Hoàng Huynh", "stars": 5, "text": "Rau xanh đẹp, nhìn tươi và hấp dẫn. Cắt đều hơn một chút là tròn 5 sao.\nThảo nhiên", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-07-03", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": ["Bạn Nhiên"]}, {"id": 186, "author": "Ngọc Minh", "stars": 5, "text": "Hs tươi , Vy pv rất tốt", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-07-03", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 187, "author": "Nguyễn Thị Đào", "stars": 5, "text": "Đồ ăn ngon , tươi , vy pv tốt", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-07-03", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 188, "author": "Nhan Thanh", "stars": 5, "text": "nhà hàng sang trọng , đồ ăn ngon , Vy pv rất tốt", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-07-03", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 189, "author": "Hồng Huấn", "stars": 5, "text": "Chardonnay dễ uống, hương trái cây chín, vị cân bằng, đáng tiền trong phân khúc phổ thông. Phù hợp dùng với hải sản và gà nướng.\nThảo nhiên : hoà đồng với khách vui vẻ nhiệt tình", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-07-03", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": ["Bạn Nhiên"]}, {"id": 190, "author": "VBM Pro", "stars": 1, "text": "The truth is all five star came from free drink. Food it not that good.", "resp": "Thank you for sharing your thoughts. We’re sorry to hear that the food did not meet your expectations.\n\nOur complimentary drink is part of an optional promotional program offered to some guests, and we always encourage honest reviews based on their actual dining experience. Guest feedback, whether positive or negative, is important to us and helps us continue improving.\n\nThank you for your visit and for taking the time to leave your comments.", "date": "2026-07-03", "likes": 1, "sentiment": "negative", "lang": "en", "is_foreign": true, "staff": []}, {"id": 191, "author": "Trường Đặng", "stars": 5, "text": "Olaf good", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-07-02", "likes": 0, "sentiment": "positive", "lang": "en", "is_foreign": true, "staff": []}, {"id": 192, "author": "Truong Dang", "stars": 5, "text": "Tôi rất hài lòng về bữa ăn này, Olaf thật tuyệt vời", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-07-02", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 193, "author": "Carol Chan", "stars": 5, "text": "Tyla", "resp": "Thank you for appreciating Hai San Hoang Gia. We hope to continue receiving your trust and choice, making Hai San Hoang Gia your destination", "date": "2026-07-02", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 194, "author": "Quý béo", "stars": 5, "text": "\"hải sản rất tươi sống, giá cả tốt, chế biến ngon, nhân viên Olaf tuyệt vời’’", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-07-02", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 195, "author": "An Vinh", "stars": 5, "text": "Olaf pha chế rất ổn, tư vấn tốt, pha chế okela", "resp": "Thank you for appreciating Hai San Hoang Gia. We hope to continue receiving your trust and choice, making Hai San Hoang Gia your destination", "date": "2026-07-02", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 196, "author": "Anh Ngoc", "stars": 5, "text": "\"hải sản rất tươi sống, giá cả tốt, chế biến ngon, nhân viên Olaf tuyệt vời.\"", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-07-02", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 197, "author": "黃靖軒", "stars": 5, "text": "Đã ghé Hải Sản Hoàng Gia theo lời giới thiệu của bạn bè và hoàn toàn không thất vọng. Hải sản rất tươi, chế biến vừa vị, nguyên liệu chất lượng nên món ăn giữ được độ ngọt tự nhiên. Không gian sang trọng, sạch sẽ và tạo cảm giác thoải mái ngay từ khi bước vào.\n\nĐiểm cộng lớn là nhân viên rất lịch sự, phục vụ tận tình và luôn sẵn sàng hỗ trợ khi khách cần. Một bữa ăn trọn vẹn từ chất lượng món ăn đến dịch vụ. Rất xứng đáng với 5 sao, nhất định sẽ quay lại!\nBạn Nir phục vụ rất tốt, tính tình thùy mị nết na, chuyên nghiệp.", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-07-02", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": ["Bạn Nhiên"]}, {"id": 198, "author": "黃俊良", "stars": 5, "text": "Một trong những quán hải sản mình thấy đáng trải nghiệm ở trung tâm TP. Hồ Chí Minh. Hải sản tươi, chế biến ngon, khẩu phần hợp lý và món nào cũng được chăm chút kỹ. Không gian sạch sẽ, thoáng mát, phù hợp cho cả những buổi ăn cùng gia đình hay bạn bè.\n\nĐặc biệt, nhân viên phục vụ rất chuyên nghiệp, luôn nhiệt tình và quan tâm đến khách. Tổng thể từ món ăn đến dịch vụ đều rất tốt. Chắc chắn sẽ quay lại vào lần tới!\nBạn Nir phục vụ rất tốt, múc canh rất tốt, thay nhiều găng tay,... Nói chung là cần tăng lương", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-07-02", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 199, "author": "陳淑華", "stars": 5, "text": "Nir ❤️❤️❤️❤️東西好吃 很划算", "resp": "Thank you for appreciating Hai San Hoang Gia. We hope to continue receiving your trust and choice, making Hai San Hoang Gia your destination", "date": "2026-07-02", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}, {"id": 200, "author": "杜楊松", "stars": 5, "text": "Lần đầu ghé Hải Sản Hoàng Gia và trải nghiệm vượt mong đợi. Món ăn được lên rất nhanh, hải sản tươi, nêm nếm vừa miệng, trình bày đẹp mắt. Không gian thoải mái, sạch sẽ, tạo cảm giác dễ chịu khi dùng bữa.\n\nNhân viên phục vụ thân thiện, luôn niềm nở và hỗ trợ khách rất chu đáo. Đây là một địa điểm đáng để quay lại nếu muốn thưởng thức hải sản chất lượng tại trung tâm TP. Hồ Chí Minh. Rất hài lòng và chấm 5 sao!\nBạn Nir phục vụ rất tốt và rất chuyên nghiệp, đề nghị chủ quán tăng lương!", "resp": "Rất cảm ơn Quý khách đã đánh giá cao Hải Sản Hoàng Gia, rất mong tiếp tục nhận được sự tin tưởng và lựa chọn Hải Sản Hoàng Gia là điểm đến", "date": "2026-07-02", "likes": 0, "sentiment": "positive", "lang": "vi", "is_foreign": false, "staff": []}];
+        let currentReviews = [...rawReviews];
+        let currentFilterStar = 'all';
+        let filterStaffOnly = false;
+        let filterForeignOnly = false;
+        let visibleCount = 20;
+
+        // INITIALIZE
+        document.addEventListener('DOMContentLoaded', () => {
+            renderStarBars();
+            applyFilters();
+        });
+
+        // SWITCH TABS
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-amber-500', 'text-slate-950', 'font-bold', 'shadow-lg', 'shadow-amber-500/20');
+                btn.classList.add('bg-slate-800/80', 'text-slate-300');
+            });
+
+            const targetPane = document.getElementById('tabContent-' + tabId);
+            const targetBtn = document.getElementById('tabBtn-' + tabId);
+            if (targetPane) targetPane.classList.remove('hidden');
+            if (targetBtn) {
+                targetBtn.classList.remove('bg-slate-800/80', 'text-slate-300');
+                targetBtn.classList.add('bg-amber-500', 'text-slate-950', 'font-bold', 'shadow-lg', 'shadow-amber-500/20');
+            }
+        }
+
+        // RENDER STAR BARS (CLICKABLE TO FILTER)
+        function renderStarBars() {
+            const counts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+            rawReviews.forEach(r => counts[r.stars] = (counts[r.stars] || 0) + 1);
+            const total = rawReviews.length;
+
+            const starsConfig = [
+                { star: 5, color: 'bg-emerald-500', count: counts[5] },
+                { star: 4, color: 'bg-teal-500', count: counts[4] },
+                { star: 3, color: 'bg-amber-500', count: counts[3] },
+                { star: 2, color: 'bg-orange-500', count: counts[2] },
+                { star: 1, color: 'bg-rose-500', count: counts[1] },
+            ];
+
+            const container = document.getElementById('starBarsContainer');
+            container.innerHTML = starsConfig.map(c => {
+                const pct = ((c.count / total) * 100).toFixed(1);
+                return `
+                    <div onclick="filterFromBar(${c.star})" class="group cursor-pointer p-2 rounded-xl hover:bg-slate-800/60 transition-all">
+                        <div class="flex items-center justify-between text-xs mb-1">
+                            <span class="font-bold flex items-center gap-1.5 text-slate-300 group-hover:text-amber-400">
+                                <span>${'★'.repeat(c.star)}</span>
+                                <span class="text-slate-500 text-[11px]">(${c.star} sao)</span>
+                            </span>
+                            <div class="flex items-center gap-2">
+                                <span class="font-extrabold text-white">${c.count} reviews</span>
+                                <span class="text-slate-400 text-[11px] w-12 text-right">${pct}%</span>
+                            </div>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-3 overflow-hidden">
+                            <div class="${c.color} h-3 rounded-full transition-all duration-500" style="width: ${pct}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterFromBar(star) {
+            switchTab('feed');
+            setFilterStar(star);
+        }
+
+        // SET STAR FILTER
+        function setFilterStar(starVal) {
+            currentFilterStar = starVal;
+            document.querySelectorAll('.chip-btn').forEach(btn => {
+                btn.classList.remove('bg-amber-500', 'text-slate-950', 'font-bold');
+                btn.classList.add('bg-slate-800', 'text-slate-300');
+            });
+
+            const activeBtn = document.getElementById('btnFilter-star-' + starVal);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-slate-800', 'text-slate-300');
+                activeBtn.classList.add('bg-amber-500', 'text-slate-950', 'font-bold');
+            }
+            applyFilters();
+        }
+
+        function toggleFilterStaff() {
+            filterStaffOnly = !filterStaffOnly;
+            const btn = document.getElementById('btnFilter-staff');
+            if (filterStaffOnly) {
+                btn.classList.remove('bg-slate-800', 'text-amber-300');
+                btn.classList.add('bg-amber-500', 'text-slate-950', 'font-bold');
+            } else {
+                btn.classList.remove('bg-amber-500', 'text-slate-950', 'font-bold');
+                btn.classList.add('bg-slate-800', 'text-amber-300');
+            }
+            applyFilters();
+        }
+
+        function toggleFilterForeign() {
+            filterForeignOnly = !filterForeignOnly;
+            const btn = document.getElementById('btnFilter-foreign');
+            if (filterForeignOnly) {
+                btn.classList.remove('bg-slate-800', 'text-purple-300');
+                btn.classList.add('bg-purple-600', 'text-white', 'font-bold');
+            } else {
+                btn.classList.remove('bg-purple-600', 'text-white', 'font-bold');
+                btn.classList.add('bg-slate-800', 'text-purple-300');
+            }
+            applyFilters();
+        }
+
+        // APPLY FILTERS & SEARCH
+        function applyFilters() {
+            const query = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+            const sortMode = document.getElementById('sortSelect').value;
+
+            let filtered = currentReviews.filter(r => {
+                // Star filter
+                if (currentFilterStar !== 'all') {
+                    if (currentFilterStar === 'neg') {
+                        if (r.stars > 2) return false;
+                    } else {
+                        if (r.stars !== parseInt(currentFilterStar)) return false;
+                    }
+                }
+                // Staff filter
+                if (filterStaffOnly && (!r.staff || r.staff.length === 0)) return false;
+                // Foreign filter
+                if (filterForeignOnly && !r.is_foreign) return false;
+                // Query search
+                if (query) {
+                    const matchAuthor = r.author.toLowerCase().includes(query);
+                    const matchText = r.text.toLowerCase().includes(query);
+                    const matchResp = r.resp.toLowerCase().includes(query);
+                    const matchStaff = r.staff.some(s => s.toLowerCase().includes(query));
+                    if (!matchAuthor && !matchText && !matchResp && !matchStaff) return false;
+                }
+                return true;
+            });
+
+            // Sorting
+            if (sortMode === 'stars-asc') {
+                filtered.sort((a, b) => a.stars - b.stars);
+            } else if (sortMode === 'stars-desc') {
+                filtered.sort((a, b) => b.stars - a.stars);
+            }
+
+            document.getElementById('filteredCountText').innerText = filtered.length;
+            renderReviews(filtered);
+        }
+
+        // RENDER REVIEW CARDS
+        function renderReviews(reviewsList) {
+            const container = document.getElementById('reviewsContainer');
+            const toShow = reviewsList.slice(0, visibleCount);
+
+            if (toShow.length === 0) {
+                container.innerHTML = `
+                    <div class="glass-card rounded-xl p-8 text-center text-slate-400">
+                        <span class="text-3xl block mb-2">🔍</span>
+                        <p class="font-semibold">Không tìm thấy đánh giá nào khớp với bộ lọc hiện tại.</p>
+                        <button onclick="resetFilters()" class="mt-3 px-4 py-1.5 rounded-lg bg-amber-500 text-slate-950 font-bold text-xs">Đặt lại bộ lọc</button>
+                    </div>
+                `;
+                document.getElementById('loadMoreSection').classList.add('hidden');
+                return;
+            }
+
+            container.innerHTML = toShow.map(r => {
+                const initial = (r.author || 'K').charAt(0).toUpperCase();
+                let starBadge = 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
+                if (r.stars === 3) starBadge = 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+                if (r.stars <= 2) starBadge = 'bg-rose-500/20 text-rose-400 border-rose-500/30';
+
+                return `
+                    <div class="glass-card rounded-xl p-4 sm:p-5 border border-slate-700/60 space-y-3 transition-all hover:border-slate-600">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-amber-400">
+                                    ${initial}
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <h4 class="font-bold text-sm text-white">${escapeHtml(r.author)}</h4>
+                                        ${r.is_foreign ? '<span class="px-1.5 py-0.5 rounded text-[10px] bg-purple-950 text-purple-300 border border-purple-500/30 font-semibold">🌏 Inbound</span>' : ''}
+                                        ${r.is_new ? '<span class="px-1.5 py-0.5 rounded text-[10px] bg-emerald-500 text-slate-950 font-black animate-pulse">MỚI NHẬN</span>' : ''}
+                                    </div>
+                                    <span class="text-[11px] text-slate-400">${r.date || 'Gần đây'}</span>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-1 rounded-lg text-xs font-black border ${starBadge}">
+                                    ${'★'.repeat(r.stars)}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- REVIEW TEXT -->
+                        <div class="text-xs sm:text-sm text-slate-200 leading-relaxed">
+                            ${r.text ? escapeHtml(r.text) : '<span class="text-slate-500 italic">(Khách hàng không để lại nhận xét chữ)</span>'}
+                        </div>
+
+                        <!-- BADGES: STAFF / SENTIMENT -->
+                        <div class="flex flex-wrap items-center gap-2 pt-1 text-[11px]">
+                            ${r.staff && r.staff.length > 0 ? r.staff.map(s => `<span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 font-semibold">👤 Khen: ${s}</span>`).join('') : ''}
+                        </div>
+
+                        <!-- OWNER RESPONSE -->
+                        ${r.resp ? `
+                            <div class="mt-2.5 p-3 rounded-lg bg-slate-900/80 border border-slate-700/60 text-xs text-slate-300 space-y-1">
+                                <div class="flex items-center justify-between text-[11px] font-bold text-amber-400">
+                                    <span>🛡️ Phản hồi từ Chủ nhà hàng Hải Sản Hoàng Gia:</span>
+                                </div>
+                                <p class="text-slate-300 text-[11px] sm:text-xs leading-normal italic">
+                                    "${escapeHtml(r.resp)}"
+                                </p>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+
+            // Load more visibility
+            const loadMoreBtn = document.getElementById('loadMoreSection');
+            if (reviewsList.length > visibleCount) {
+                loadMoreBtn.classList.remove('hidden');
+            } else {
+                loadMoreBtn.classList.add('hidden');
+            }
+        }
+
+        function loadMoreReviews() {
+            visibleCount += 20;
+            applyFilters();
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            setFilterStar('all');
+            filterStaffOnly = false;
+            filterForeignOnly = false;
+            document.getElementById('btnFilter-staff').classList.remove('bg-amber-500', 'text-slate-950', 'font-bold');
+            document.getElementById('btnFilter-staff').classList.add('bg-slate-800', 'text-amber-300');
+            document.getElementById('btnFilter-foreign').classList.remove('bg-purple-600', 'text-white', 'font-bold');
+            document.getElementById('btnFilter-foreign').classList.add('bg-slate-800', 'text-purple-300');
+            applyFilters();
+        }
+
+        // SIMULATE NEW REALTIME REVIEW
+        function simulateNewReview() {
+            const mockNames = ['David Miller (Du khách Úc)', 'Min-ji Park (Hàn Quốc)', 'Trần Hoàng Long', 'Jessica Wong', 'Phạm Minh Tuấn'];
+            const mockReviews = [
+                { stars: 5, text: 'Awesome King Crab! Bé Ngân was super helpful and showed us how to crack the giant claws. Will return next time in Saigon!', staff: ['Bé Ngân'], lang: 'en', is_foreign: true },
+                { stars: 5, text: 'Cua hoàng đế sốt tiêu đen rất đậm đà, tươi bơi tại hồ chọn con nào bắt con đó. Nhân viên Nhiên phục vụ chu đáo.', staff: ['Bạn Nhiên'], lang: 'vi', is_foreign: false },
+                { stars: 5, text: 'Best seafood spot near Ben Thanh Market! Sylvia recommended the garlic butter lobster, heavenly taste!', staff: ['Sylvia'], lang: 'en', is_foreign: true },
+                { stars: 1, text: 'Hải sản tươi nhưng đợi chế biến gần 50 phút lâu quá, bàn bên cạnh vô sau lại có món trước!', staff: [], lang: 'vi', is_foreign: false }
+            ];
+
+            const pick = mockReviews[Math.floor(Math.random() * mockReviews.length)];
+            const name = mockNames[Math.floor(Math.random() * mockNames.length)];
+
+            const newRev = {
+                id: currentReviews.length + 1,
+                author: name,
+                stars: pick.stars,
+                text: pick.text,
+                resp: 'Cảm ơn quý khách đã ghé thăm và để lại đánh giá quý báu cho Hải Sản Hoàng Gia. Chúc quý khách một ngày thật nhiều niềm vui!',
+                date: 'Vừa xong',
+                likes: 0,
+                sentiment: pick.stars >= 4 ? 'positive' : 'negative',
+                lang: pick.lang,
+                is_foreign: pick.is_foreign,
+                staff: pick.staff,
+                is_new: true
+            };
+
+            currentReviews.unshift(newRev);
+            showToast(`⚡ Nhận đánh giá mới: ${pick.stars}★ từ ${name}!`, pick.stars >= 4 ? 'success' : 'danger');
+
+            // Update KPI badge
+            document.getElementById('kpiTotalReviews').innerText = currentReviews.length;
+            document.getElementById('feedCountBadge').innerText = currentReviews.length;
+
+            applyFilters();
+        }
+
+        // RESET DATA
+        function resetData() {
+            currentReviews = [...rawReviews];
+            document.getElementById('kpiTotalReviews').innerText = '200';
+            document.getElementById('feedCountBadge').innerText = '200';
+            resetFilters();
+            showToast('🔄 Đã làm mới dữ liệu về 200 đánh giá ban đầu!', 'info');
+        }
+
+        // EXPORT FILTERED CSV
+        function exportCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,author,stars,date,text\n";
+            currentReviews.forEach(r => {
+                const cleanText = (r.text || '').replace(/"/g, '""');
+                csvContent += `"${r.author}",${r.stars},"${r.date}","${cleanText}"\n`;
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "hshg_exported_reviews.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast('📥 Đã tải file CSV về máy thành công!', 'success');
+        }
+
+        // TOAST ENGINE
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            let borderClass = 'border-amber-500/40 bg-slate-900 text-amber-300';
+            if (type === 'success') borderClass = 'border-emerald-500/50 bg-slate-900 text-emerald-300';
+            if (type === 'danger') borderClass = 'border-rose-500/50 bg-slate-900 text-rose-300';
+
+            toast.className = `p-3.5 rounded-xl border ${borderClass} shadow-2xl text-xs font-bold transition-all duration-300 transform translate-y-2 pointer-events-auto flex items-center gap-2`;
+            toast.innerHTML = `<span>🔔</span> <span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-[-10px]');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        function escapeHtml(string) {
+            const p = document.createElement('p');
+            p.textContent = string;
+            return p.innerHTML;
+        }
+    </script>
+</body>
+</html>
